@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -7,11 +7,39 @@ import {
   Text,
 } from '@react-native-material/core';
 import { Dimensions, StyleSheet } from 'react-native';
-import { COLOR_PRIMARY } from '../constants';
-import { useMutation } from 'react-query';
+import {
+  COLOR_PRIMARY,
+  COLOR_ACCENT,
+  COLOR_COMPLEMENTARY,
+  MOCK_SERVER_URL,
+} from '../config';
+import { useMutation, useQueryClient } from 'react-query';
+import reactNativeAxios from 'react-native-axios';
 
-const Register = () => {
-  // const register = useMutation();
+const Register = ({ toggleActive }) => {
+  const queryClient = useQueryClient();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const mutation = useMutation(() => {
+    return queryClient.fetchQuery('register', () => {
+      return reactNativeAxios.post(`${MOCK_SERVER_URL}/User`, {
+        email,
+        password,
+      });
+    });
+  });
+
+  if (mutation.isLoading) {
+    return <Text>Loading...</Text>;
+  }
+  if (mutation.isError) {
+    return <Text>Error</Text>;
+  }
+  if (mutation.isSuccess) {
+    return <Text>Success</Text>;
+  }
+
   return (
     <Flex center style={{ height: Dimensions.get('window').height }}>
       <Flex inline center>
@@ -20,7 +48,8 @@ const Register = () => {
           compact={true}
           title="- Login"
           variant="text"
-          color={COLOR_PRIMARY}
+          color={COLOR_COMPLEMENTARY}
+          onPress={() => toggleActive('login')}
         />
       </Flex>
 
@@ -30,6 +59,8 @@ const Register = () => {
           variant="outlined"
           label="email*"
           helperText="Enter your email"
+          value={email}
+          onChangeText={setEmail}
           style={styles.input}
         />
       </Box>
@@ -41,16 +72,22 @@ const Register = () => {
           helperText="must be at least 8 characters"
           style={styles.input}
           secureTextEntry={true}
+          value={password}
+          onChangeText={setPassword}
         />
       </Box>
       <Box>
-        <Button color={COLOR_PRIMARY} variant="outlined" title="Outlined" />
+        <Button
+          color={COLOR_COMPLEMENTARY}
+          title="Register"
+          onPress={() => {
+            mutation.mutate();
+          }}
+        />
       </Box>
     </Flex>
   );
 };
-
-export default Register;
 
 const styles = StyleSheet.create({
   input: {
@@ -67,3 +104,5 @@ const styles = StyleSheet.create({
     blurRadius: 10,
   },
 });
+
+export default Register;
