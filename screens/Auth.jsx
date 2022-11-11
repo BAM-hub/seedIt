@@ -1,33 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Login from '../components/Login';
 import Register from '../components/Register';
 import {
-  Box,
-  Button,
-  Flex,
-  TextInput,
-  Text,
-} from '@react-native-material/core';
-import {
+  View,
   Dimensions,
   StyleSheet,
   ImageBackground,
   LayoutAnimation,
   NativeModules,
 } from 'react-native';
-import background from '../assets/background.jpg';
+import { Button } from '@rneui/base';
+import { useTheme } from '@rneui/themed';
+
+import background from '../assets/bg.jpg';
 
 const { UIManager } = NativeModules;
 
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-import { COLOR_PRIMARY } from '../config';
-
 const Auth = () => {
   const [margin, setMargin] = useState('300%');
   const [active, setActive] = useState();
-
+  const { theme } = useTheme();
   const toggleActive = target => {
     setActive(target);
     LayoutAnimation.configureNext({
@@ -36,53 +31,69 @@ const Auth = () => {
       update: { type: 'spring', springDamping: 0.4 },
       delete: { type: 'linear', property: 'opacity' },
     });
-    setMargin('40%');
+    setMargin('0%');
   };
 
   return (
-    <Flex center style={{ height: Dimensions.get('window').height }}>
-      <ImageBackground source={background} style={styles.image}>
+    <View
+      style={{
+        height: Dimensions.get('window').height,
+      }}>
+      <ImageBackground
+        source={background}
+        style={{ ...styles.image, position: 'relative' }}>
         {active ? (
           active === 'login' ? (
-            <Flex center style={{ ...styles.container, marginTop: margin }}>
+            <View
+              style={{
+                ...styles.container,
+                marginTop: margin,
+                position: 'absolute',
+                bottom: 0,
+              }}>
               <Login toggleActive={toggleActive} />
-            </Flex>
+            </View>
           ) : (
-            <Flex center style={{ ...styles.container, marginTop: margin }}>
+            <View
+              style={{
+                ...styles.container,
+                marginTop: margin,
+                position: 'absolute',
+                bottom: 0,
+              }}>
               <Register toggleActive={toggleActive} />
-            </Flex>
+            </View>
           )
         ) : (
-          <Flex center style={styles.buttonContainer}>
-            <Box>
-              <Button
-                style={styles.button}
-                color={COLOR_PRIMARY}
-                titleStyle={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                }}
-                title="Login"
-              />
-            </Box>
-            <Box>
-              <Button
-                style={styles.button}
-                color={COLOR_PRIMARY}
-                titleStyle={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                }}
-                title="Register"
-                onPress={() => toggleActive('Register')}
-              />
-            </Box>
-          </Flex>
+          <View style={styles.buttonContainer}>
+            <Button
+              title="Login"
+              containerStyle={{
+                width: 150,
+                borderRadius: 50,
+              }}
+              buttonStyle={{
+                backgroundColor: theme.colors.primary,
+                padding: 15,
+              }}
+              onPress={() => toggleActive('login')}
+            />
+            <Button
+              title="Register"
+              containerStyle={{
+                width: 150,
+                borderRadius: 50,
+              }}
+              buttonStyle={{
+                backgroundColor: theme.colors.primary,
+                padding: 15,
+              }}
+              onPress={() => toggleActive('register')}
+            />
+          </View>
         )}
       </ImageBackground>
-    </Flex>
+    </View>
   );
 };
 
@@ -91,11 +102,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '70%',
     // marginTop: '40%',
-    backgroundColor: '#CFFFB3',
     borderRadius: 50,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
     padding: 20,
+    justifyContent: 'center',
+    backgroundColor: 'white',
   },
   buttonContainer: {
     height: Dimensions.get('window').height / 4,
