@@ -8,19 +8,46 @@ import { useTheme, Skeleton } from '@rneui/themed';
 // import { Stack } from '@rneui/base';
 // needed data location { latlong, elevation} and time {date, time} and weather {temp, humidity, cloud cover, pressure, weather condition, soil type}
 
+import { useIsFocused } from '@react-navigation/native';
+
+import { getPrediction, uploadImage } from '../api/photo';
+import { useMutation } from 'react-query';
+
 const CameraComponent = () => {
+  const isFocused = useIsFocused();
+  const devices = useCameraDevices();
+  let device = devices.back;
+  const { theme } = useTheme();
+  const [isActive, setIsActive] = useState(false);
   const [flash, setFlash] = useState('off');
   const [isCapturing, setIsCapturing] = useState(false);
-  const { theme } = useTheme();
-  const devices = useCameraDevices();
-  const device = devices.back;
   const [tempImage, setTempImage] = useState(null);
+  const [isFoucusing, setIsFoucusing] = useState(null);
 
   const camera = useRef(null);
 
   useEffect(() => {
+    console.log('isFocused', isFocused);
+    if (isFocused) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
     getCamerPermission();
   }, [getCamerPermission]);
+
+  useEffect(() => {
+    if (isFoucusing) {
+      setTimeout(() => {
+        setIsFoucusing(false);
+      }, 500);
+    }
+  }, [isFoucusing]);
+
+  const mutation = useMutation(async photo => await uploadImage(photo));
 
   const getCamerPermission = async () => {
     const cameraPermission = await Camera.getCameraPermissionStatus();
@@ -39,39 +66,28 @@ const CameraComponent = () => {
     });
     setTempImage(`file://${photo.path}`);
     setIsCapturing(false);
-    const formData = new FormData();
-    formData.append('image', {
-      uri: `file://${photo.path}`,
-      name: 'photo.png',
-      filename: 'imageName.png',
-      type: 'image/png',
-    });
-    formData.append('contetntType', 'image/png');
-    await fetch('http://10.0.2.2:8000/Upload_Image', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('data', data);
-        console.log('formData', formData);
-      });
-    await fetch('http://10.0.2.2:8000/predict')
-      .then(response => response.json())
-      .then(data => {
-        console.log('data', data);
-      })
-      .catch(err => console.log(err));
+    // await uploadImage(photo);
+    mutation.mutate(photo);
+    // await getPrediction();
   };
 
   const handleFocus = async e => {
-    console.log('e', 'focusing');
-    await camera.current.focus({
-      x: e.nativeEvent.locationX,
-      y: e.nativeEvent.locationY,
+    if (!device.supportsFocus) return;
+    setIsFoucusing({
+      x: e.nativeEvent.pageX,
+      y: e.nativeEvent.pageY,
     });
+    try {
+      await camera.current.focus({
+        x: e.nativeEvent.locationX,
+        y: e.nativeEvent.locationY,
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
   };
-  if (!device)
+
+  if (device == null) {
     return (
       <View
         style={{
@@ -102,7 +118,7 @@ const CameraComponent = () => {
         </View>
       </View>
     );
-
+  }
   if (tempImage) {
     return (
       <View
@@ -142,10 +158,24 @@ const CameraComponent = () => {
         ref={camera}
         photo={true}
         device={device}
-        isActive={true}
-        // onPress={e => handleFocus(e)}
-        format="png"
+        onTouchEndCapture={handleFocus}
+        isActive={isActive}
+        // format="png"
       />
+      {isFoucusing && (
+        <View
+          style={{
+            position: 'absolute',
+            border: '1px solid white',
+            borderWidth: 1,
+            borderColor: 'white',
+            width: 76,
+            height: 76,
+            borderRadius: 38,
+            left: isFoucusing.x - 38,
+            top: isFoucusing.y - 38,
+          }}></View>
+      )}
       <View
         style={{
           position: 'absolute',
