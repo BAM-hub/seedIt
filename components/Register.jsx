@@ -1,52 +1,60 @@
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { MOCK_SERVER_URL } from '../config';
 import { useMutation, useQueryClient } from 'react-query';
-import reactNativeAxios from 'react-native-axios';
 import { Input, Icon, useTheme, Text, Button } from '@rneui/themed';
 
 import TextButton from './shared/TextButton';
+import { register } from '../api/auth';
 
 const Register = ({ toggleActive }) => {
-  const queryClient = useQueryClient();
-  const { theme } = useTheme();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isError, setIsError] = useState(false);
-  // https://bauseeditapi20221111223258.azurewebsites.net/api/Account
-  const mutation = useMutation({
-    mutationFn: async () => {
-      try {
-        await fetch(`http://10.0.2.2:8000/`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('data', data);
-          });
-        // return await reactNativeAxios({
-        //   method: 'get',
-        //   // headers: {
-        //   //   'Content-Type': 'application/json',
-        //   // },
-        //   url: 'https://10.0.2.2:44318/api/Account',
-        //   // data: JSON.stringify({
-        //   //   email: 'ameedA2@gmail.com',
-        //   //   password_user: '123456789',
-        //   //   username: 'AmeedA2',
-        //   //   fullName: 'Ameed Tamimi',
-        //   //   roleName: 'Admin',
-        //   //   profilePicture: 'abc.png',
-        //   //   address: 'Amman',
-        //   // }),
-        // })
-        //   .then(res => console.log(res))
-        //   .catch(err => console.log(err));
-      } catch (error) {
-        console.log({ error: error });
-      }
-    },
+  const [user, setUser] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [isError, setIsError] = useState([]);
+  const { theme } = useTheme();
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation(() => register(user));
+
+  const onChange = (text, name) => {
+    const errors = isError.filter(err => err !== name);
+    if (errors) setIsError(errors);
+    setUser({
+      ...user,
+      [name]: text,
+    });
+  };
+
+  const validateForm = () => {
+    const emailPattern = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const passwordPattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d#$@!%&*?]{6,30}$/;
+
+    let isFormValid = true;
+
+    if (!emailPattern.test(user.email)) {
+      isFormValid = false;
+      setIsError(preveState => [...preveState, 'email']);
+    }
+    if (!passwordPattern.test(user.password)) {
+      isFormValid = false;
+      setIsError(preveState => [...preveState, 'password']);
+    }
+    if (user.password !== user.confirmPassword || !user.confirmPassword) {
+      isFormValid = false;
+      setIsError(preveState => [...preveState, 'confirmPassword']);
+    }
+    return isFormValid;
+  };
+
+  const handelSubmit = () => {
+    if (!validateForm()) return;
+    mutation.mutate();
+  };
 
   if (mutation.isLoading) {
     return <Text>Loading...</Text>;
@@ -55,6 +63,7 @@ const Register = ({ toggleActive }) => {
     return <Text>Error</Text>;
   }
   if (mutation.isSuccess) {
+    console.log(mutation.data);
     return <Text>Success</Text>;
   }
 
@@ -93,7 +102,7 @@ const Register = ({ toggleActive }) => {
         <Input
           placeholder="Email*"
           errorStyle={{ color: 'red' }}
-          errorMessage={isError ? 'ENTER A VALID Email' : ''}
+          errorMessage={isError.includes('email') ? 'ENTER A VALID EMAIL' : ''}
           containerStyle={{ width: '100%', alignItems: 'center' }}
           inputContainerStyle={{
             width: 300,
@@ -102,15 +111,15 @@ const Register = ({ toggleActive }) => {
             borderBottomWidth: 2,
           }}
           inputStyle={{ color: 'black' }}
-          value={email}
-          onChangeText={setEmail}
+          value={user.email}
+          onChangeText={text => onChange(text, 'email')}
         />
 
         <Input
           placeholder="Password*"
           errorStyle={{ color: 'red' }}
           errorMessage={
-            isError
+            isError.includes('password')
               ? 'PASSWORD MUST BE AT LEAST 6 CHARACTERS WITH 1 UOPERCASE, 1 LOWERCASE, 1 NUMBER, AND 1 SPECIAL CHARACTER'
               : ''
           }
@@ -122,8 +131,8 @@ const Register = ({ toggleActive }) => {
             borderBottomWidth: 2,
           }}
           secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
+          value={user.password}
+          onChangeText={text => onChange(text, 'password')}
           rightIcon={
             <>
               {!showPassword ? (
@@ -151,8 +160,8 @@ const Register = ({ toggleActive }) => {
           placeholder="Confirm Password*"
           errorStyle={{ color: 'red' }}
           errorMessage={
-            isError
-              ? 'PASSWORD MUST BE AT LEAST 6 CHARACTERS WITH 1 UOPERCASE, 1 LOWERCASE, 1 NUMBER, AND 1 SPECIAL CHARACTER'
+            isError.includes('confirmPassword')
+              ? 'This Field must match the password field'
               : ''
           }
           containerStyle={{ width: '100%', alignItems: 'center' }}
@@ -163,8 +172,8 @@ const Register = ({ toggleActive }) => {
             borderBottomWidth: 2,
           }}
           secureTextEntry={!showPassword}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          value={user.confirmPassword}
+          onChangeText={text => onChange(text, 'confirmPassword')}
           rightIcon={
             <>
               {!showPassword ? (
@@ -201,26 +210,10 @@ const Register = ({ toggleActive }) => {
           width: 150,
           borderRadius: 50,
         }}
-        onPress={() => mutation.mutate()}
+        onPress={handelSubmit}
       />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  input: {
-    margin: 16,
-    width: Dimensions.get('window').width / 1.2,
-  },
-  image: {
-    flex: 1,
-    justifyContent: 'center',
-    width: Dimensions.get('window').width,
-    alignItems: 'center',
-  },
-  button: {
-    blurRadius: 10,
-  },
-});
 
 export default Register;
