@@ -12,7 +12,7 @@ import {
 import { Button } from '@rneui/base';
 import { useTheme } from '@rneui/themed';
 
-import background from '../assets/bg.jpg';
+import background from '../assets/background.jpeg';
 
 const { UIManager } = NativeModules;
 
