@@ -8,7 +8,7 @@ export const uploadImage = async image => {
   try {
     const formData = new FormData();
     formData.append('image', {
-      uri: `file://${image.path}`,
+      uri: `file://${image}`,
       name: 'photo.jpg',
       filename: 'imageName.jpg',
       type: 'image/jpg',
@@ -19,8 +19,10 @@ export const uploadImage = async image => {
     const res = await client.post('/Upload_Image', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
+    return res.data;
   } catch (error) {
     console.log(error);
+    return { predication: 'Somthing went wrong' };
   }
 };
 
