@@ -4,22 +4,23 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import CameraComponent from '../components/CameraComponent';
 import Auth from './Auth';
+import Explore from './Explore';
 // import { BottomNavigation } from 'react-native-paper';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { useTheme } from '@rneui/themed';
 
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
+  const { theme } = useTheme();
   return (
     <NavigationContainer>
       <View style={{ height: '100%', backgroundColor: 'red' }}>
         <Tab.Navigator
           initialRouteName="explore"
-          activeColor="#f0edf6"
-          inactiveColor="#3e2465"
-          //   barStyle={{ height: 100, backgroundColor: 'red', borderWidth: 1 }}
-        >
+          activeColor={theme.colors.accent}
+          inactiveColor={theme.colors.secondary}
+          barStyle={{ backgroundColor: theme.colors.primary }}>
           <Tab.Screen
             name="camera"
             component={CameraComponent}
@@ -30,13 +31,20 @@ const Navigation = () => {
           />
           <Tab.Screen
             name="explore"
-            component={Auth}
+            component={Explore}
             options={{
               tabBarLabel: 'explore',
               tabBarIcon: () => <Icon name="home" size={25} color="white" />,
             }}
           />
-          <Tab.Screen name="Auth" component={Auth} />
+          <Tab.Screen
+            name="Profile"
+            component={Auth}
+            options={{
+              tabBarLabel: 'profile',
+              tabBarIcon: () => <Icon name="user" size={25} color="white" />,
+            }}
+          />
         </Tab.Navigator>
       </View>
     </NavigationContainer>
