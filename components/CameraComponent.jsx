@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View, Text, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import FlashOf from 'react-native-vector-icons/dist/Ionicons';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
@@ -10,7 +10,7 @@ import { useTheme, Skeleton } from '@rneui/themed';
 
 import { useIsFocused } from '@react-navigation/native';
 
-import { getPrediction, uploadImage } from '../api/photo';
+import { uploadImage } from '../api/photo';
 import { useMutation } from 'react-query';
 
 const CameraComponent = () => {
@@ -23,6 +23,7 @@ const CameraComponent = () => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [tempImage, setTempImage] = useState(null);
   const [isFoucusing, setIsFoucusing] = useState(null);
+  const [predication, setPredication] = useState(null);
 
   const camera = useRef(null);
 
@@ -47,7 +48,15 @@ const CameraComponent = () => {
     }
   }, [isFoucusing]);
 
-  const mutation = useMutation(async photo => await uploadImage(photo));
+  const mutation = useMutation(async photo => await uploadImage(photo), {
+    onSuccess: res => {
+      console.log('data', res);
+      setPredication(res.predication);
+    },
+    onError: err => {
+      console.log('error', err);
+    },
+  });
 
   const getCamerPermission = async () => {
     const cameraPermission = await Camera.getCameraPermissionStatus();
@@ -67,10 +76,9 @@ const CameraComponent = () => {
     setTempImage(`file://${photo.path}`);
     setIsCapturing(false);
     // await uploadImage(photo);
-    mutation.mutate(photo);
+    mutation.mutate(photo.path);
     // await getPrediction();
   };
-
   const handleFocus = async e => {
     if (!device.supportsFocus) return;
     setIsFoucusing({
@@ -123,6 +131,7 @@ const CameraComponent = () => {
     return (
       <View
         style={{
+          position: 'relative',
           height: '100%',
           alignItems: 'center',
           justifyContent: 'center',
@@ -134,6 +143,24 @@ const CameraComponent = () => {
           }}
           style={{ width: '90%', height: '70%' }}
         />
+        {predication && (
+          <View
+            style={{
+              bottom: Dimensions.get('window').height * 0.04,
+              left: 0,
+              right: 0,
+              width: '100%',
+              height: 50,
+              backgroundColor: '#2020207e',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1,
+            }}>
+            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>
+              {predication}
+            </Text>
+          </View>
+        )}
         <View
           style={{
             flexDirection: 'row-reverse',
@@ -144,7 +171,11 @@ const CameraComponent = () => {
           <TouchableOpacity>
             <Icon name="check" size={50} color={theme.colors.primary} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setTempImage(null)}>
+          <TouchableOpacity
+            onPress={() => {
+              setPredication('');
+              setTempImage(null);
+            }}>
             <Icon name="times" size={50} color={theme.colors.primary} />
           </TouchableOpacity>
         </View>
@@ -159,8 +190,8 @@ const CameraComponent = () => {
         photo={true}
         device={device}
         onTouchEndCapture={handleFocus}
-        isActive={isActive}
         // format="png"
+        isActive={isActive}
       />
       {isFoucusing && (
         <View
@@ -227,7 +258,10 @@ const CameraComponent = () => {
         <TouchableOpacity
           onPress={() =>
             launchImageLibrary({}, data => {
-              if (!data.didCancel) setTempImage(data.assets[0].uri);
+              if (!data.didCancel) {
+                setTempImage(data.assets[0].uri);
+                mutation.mutate(data.assets[0].uri);
+              }
             })
           }>
           <Icon name="photo" size={30} color={theme.colors.white} />
