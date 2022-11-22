@@ -25,13 +25,3 @@ export const uploadImage = async image => {
     return { predication: 'Somthing went wrong' };
   }
 };
-
-export const getPrediction = async () => {
-  try {
-    const res = await client.get('/predict');
-
-    console.log('res', res.data);
-  } catch (error) {
-    console.log(error);
-  }
-};
