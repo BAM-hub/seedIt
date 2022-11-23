@@ -199,8 +199,9 @@ const Explore = () => {
             position: 'relative',
             backgroundColor: 'white',
             width: '90%',
-            alignSelf: 'flex-end',
-            marginRight: -20,
+            // alignSelf: 'flex-end',
+            alignSelf: 'center',
+            // marginRight: -20,
             borderRadius: 10,
             padding: 15,
             flexDirection: 'row',
@@ -248,7 +249,7 @@ const Explore = () => {
               height: 200,
               // backgroundColor: 'red',
               alignItems: 'flex-end',
-              marginRight: -20,
+              // marginRight: -20,
             }}>
             <Image
               source={{

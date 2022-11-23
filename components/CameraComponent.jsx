@@ -100,7 +100,7 @@ const CameraComponent = () => {
       <View
         style={{
           alignItems: 'center',
-          // justifyContent: 'space-between',
+          justifyContent: 'space-between',
           backgroundColor: theme.colors.white,
         }}>
         <View
@@ -109,7 +109,13 @@ const CameraComponent = () => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Skeleton animation="none" width={300} height={300} circle />
+          <Skeleton
+            animation="wave"
+            style={{ backgroundColor: 'grey' }}
+            width={300}
+            height={300}
+            circle
+          />
         </View>
         <View
           style={{
@@ -120,9 +126,25 @@ const CameraComponent = () => {
             paddingBottom: 20,
             justifyContent: 'space-evenly',
           }}>
-          <Skeleton animation="none" width={40} height={40} />
-          <Skeleton animation="none" width={80} height={80} circle />
-          <Skeleton animation="none" width={40} height={40} />
+          <Skeleton
+            animation="none"
+            style={{ backgroundColor: 'grey' }}
+            width={40}
+            height={40}
+          />
+          <Skeleton
+            animation="none"
+            style={{ backgroundColor: 'grey' }}
+            width={80}
+            height={80}
+            circle
+          />
+          <Skeleton
+            animation="none"
+            style={{ backgroundColor: 'grey' }}
+            width={40}
+            height={40}
+          />
         </View>
       </View>
     );

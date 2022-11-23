@@ -30,9 +30,9 @@ const App = () => {
     <SafeAreaView>
       <QueryClientProvider client={queryClient} contextSharing={true}>
         <ThemeProvider theme={theme}>
-          <Auth />
+          {/* <Auth /> */}
           {/* <CameraComponent /> */}
-          {/* <Navigation /> */}
+          <Navigation />
         </ThemeProvider>
       </QueryClientProvider>
     </SafeAreaView>
