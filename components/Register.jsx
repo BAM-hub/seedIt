@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { MOCK_SERVER_URL } from '../config';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation } from 'react-query';
 import { Input, Icon, useTheme, Text, Button } from '@rneui/themed';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextButton from './shared/TextButton';
-import { register } from '../api/auth';
+import { register } from '../api/user';
 
 const Register = ({ toggleActive }) => {
   const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -17,8 +18,19 @@ const Register = ({ toggleActive }) => {
   const [isError, setIsError] = useState([]);
   const { theme } = useTheme();
 
-  const queryClient = useQueryClient();
-  const mutation = useMutation(() => register(user));
+  const mutation = useMutation({
+    mutationFn: () => register(user),
+    onSuccess: async data => {
+      try {
+        await AsyncStorage.setItem('@token', data.data.token);
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    onError: error => {
+      console.log(error);
+    },
+  });
 
   const onChange = (text, name) => {
     const errors = isError.filter(err => err !== name);
@@ -35,7 +47,10 @@ const Register = ({ toggleActive }) => {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d#$@!%&*?]{6,30}$/;
 
     let isFormValid = true;
-
+    if (!user.firstName || !user.lastName) {
+      isFormValid = false;
+      setIsError([...isError, 'name']);
+    }
     if (!emailPattern.test(user.email)) {
       isFormValid = false;
       setIsError(preveState => [...preveState, 'email']);
@@ -55,17 +70,6 @@ const Register = ({ toggleActive }) => {
     if (!validateForm()) return;
     mutation.mutate();
   };
-
-  if (mutation.isLoading) {
-    return <Text>Loading...</Text>;
-  }
-  if (mutation.isError) {
-    return <Text>Error</Text>;
-  }
-  if (mutation.isSuccess) {
-    console.log(mutation.data);
-    return <Text>Success</Text>;
-  }
 
   return (
     <View
@@ -95,6 +99,38 @@ const Register = ({ toggleActive }) => {
       </View>
       <View
         style={{
+          flexDirection: 'row',
+          width: '90%',
+          alignSelf: 'center',
+        }}>
+        <Input
+          placeholder="First Name"
+          onChangeText={text => onChange(text, 'firstName')}
+          value={user.firstName}
+          errorMessage={isError.includes('name') ? 'Please enter a name' : null}
+          containerStyle={{
+            width: '50%',
+          }}
+          errorStyle={{ color: 'red' }}
+          inputContainerStyle={theme.inputContainerPrimary}
+          inputStyle={theme.textBlack}
+        />
+        <Input
+          placeholder="Last Name"
+          onChangeText={text => onChange(text, 'lastName')}
+          value={user.lastName}
+          errorMessage={isError.includes('name') ? 'Please enter a name' : null}
+          containerStyle={{
+            width: '50%',
+          }}
+          errorStyle={{ color: 'red' }}
+          inputContainerStyle={theme.inputContainerPrimary}
+          inputStyle={theme.textBlack}
+        />
+      </View>
+
+      <View
+        style={{
           alignItems: 'center',
           justifyContent: 'space-evenly',
           flex: 0.8,
@@ -103,14 +139,9 @@ const Register = ({ toggleActive }) => {
           placeholder="Email*"
           errorStyle={{ color: 'red' }}
           errorMessage={isError.includes('email') ? 'ENTER A VALID EMAIL' : ''}
-          containerStyle={{ width: '100%', alignItems: 'center' }}
-          inputContainerStyle={{
-            width: 300,
-            backgroundColor: 'white',
-            borderBottomColor: theme.colors.accent,
-            borderBottomWidth: 2,
-          }}
-          inputStyle={{ color: 'black' }}
+          containerStyle={theme.inputContainerWrapper}
+          inputContainerStyle={theme.inputContainerPrimary}
+          inputStyle={theme.textBlack}
           value={user.email}
           onChangeText={text => onChange(text, 'email')}
         />
@@ -123,13 +154,8 @@ const Register = ({ toggleActive }) => {
               ? 'PASSWORD MUST BE AT LEAST 6 CHARACTERS WITH 1 UOPERCASE, 1 LOWERCASE, 1 NUMBER, AND 1 SPECIAL CHARACTER'
               : ''
           }
-          containerStyle={{ width: '100%', alignItems: 'center' }}
-          inputContainerStyle={{
-            width: 300,
-            backgroundColor: 'white',
-            borderBottomColor: theme.colors.accent,
-            borderBottomWidth: 2,
-          }}
+          containerStyle={theme.inputContainerWrapper}
+          inputContainerStyle={theme.inputContainerPrimary}
           secureTextEntry={!showPassword}
           value={user.password}
           onChangeText={text => onChange(text, 'password')}
@@ -164,37 +190,11 @@ const Register = ({ toggleActive }) => {
               ? 'This Field must match the password field'
               : ''
           }
-          containerStyle={{ width: '100%', alignItems: 'center' }}
-          inputContainerStyle={{
-            width: 300,
-            backgroundColor: 'white',
-            borderBottomColor: theme.colors.accent,
-            borderBottomWidth: 2,
-          }}
+          containerStyle={theme.inputContainerWrapper}
+          inputContainerStyle={theme.inputContainerPrimary}
           secureTextEntry={!showPassword}
           value={user.confirmPassword}
           onChangeText={text => onChange(text, 'confirmPassword')}
-          rightIcon={
-            <>
-              {!showPassword ? (
-                <Icon
-                  name="eye"
-                  type="feather"
-                  size={19}
-                  color="black"
-                  onPress={() => setShowPassword(!showPassword)}
-                />
-              ) : (
-                <Icon
-                  name="eye-off"
-                  type="feather"
-                  size={19}
-                  color="black"
-                  onPress={() => setShowPassword(!showPassword)}
-                />
-              )}
-            </>
-          }
         />
       </View>
       <Button
