@@ -23,6 +23,21 @@ const theme = createTheme({
     naturalComplement: '#FAEED9',
     white: '#FFFFFF',
   },
+  inputContainerWrapper: {
+    width: '90%',
+    alignItems: 'center',
+  },
+  inputContainerPrimary: {
+    backgroundColor: 'white',
+    borderBottomColor: '#FFC107',
+    borderBottomWidth: 2,
+  },
+  textBlack: {
+    color: 'black',
+  },
+  textlight: {
+    color: '#ABC09F',
+  },
 });
 
 const App = () => {
