@@ -2,6 +2,9 @@ import axios from 'axios';
 
 const client = axios.create({
   baseURL: 'http://10.0.2.2:8000/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 client.interceptors.response.use(
@@ -24,11 +27,18 @@ export const register = async ({ firstName, lastName, email, password }) => {
       email,
       password,
     }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    },
+  );
+  return res;
+};
+
+//login
+export const login = async (email, password) => {
+  const res = await client.post(
+    '/users/Login',
+    JSON.stringify({
+      email,
+      password,
+    }),
   );
   return res;
 };
