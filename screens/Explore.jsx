@@ -5,15 +5,19 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Chip, Image, Input, useTheme } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import { Modal, Portal, Provider } from 'react-native-paper';
+import useGetAuthToken from '../hooks/useGetAuthToken';
+import AuthModal from '../components/shared/AuthModal';
 
 const Explore = () => {
+  const { data, isLoading, isError } = useGetAuthToken();
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [stories, setStories] = useState([
     {
       id: 1,
@@ -98,6 +102,11 @@ const Explore = () => {
       liked: true,
     },
   ]);
+  useEffect(() => {
+    if (!data) {
+      setShowAuthModal(true);
+    }
+  }, [data]);
 
   const renderItem = ({ item }) => (
     <View
@@ -116,7 +125,12 @@ const Explore = () => {
   );
 
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        height: '100%',
+        position: 'relative',
+      }}>
       <View
         style={{
           width: '100%',
@@ -155,7 +169,7 @@ const Explore = () => {
           </View>
         </TouchableOpacity>
       </View>
-      <ScrollView style={{ marginBottom: 90 }}>
+      <ScrollView>
         <FlatList
           data={stories}
           renderItem={renderItem}
@@ -357,6 +371,8 @@ const Explore = () => {
           </View>
         ))}
       </ScrollView>
+      <AuthModal showModal={showAuthModal} setShowModal={setShowAuthModal} />
+
       <ProfileModal showModal={showModal} setShowModal={setShowModal} />
     </View>
   );
