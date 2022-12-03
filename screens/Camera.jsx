@@ -5,15 +5,15 @@ import FlashOf from 'react-native-vector-icons/dist/Ionicons';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useTheme, Skeleton } from '@rneui/themed';
-// import { Stack } from '@rneui/base';
+import { useIsFocused } from '@react-navigation/native';
+import { uploadImage } from '../api/photo';
+import { useMutation } from '@tanstack/react-query';
+import useGetAuthToken from '../hooks/useGetAuthToken';
+import AuthModal from '../components/shared/AuthModal';
+
 // needed data location { latlong, elevation} and time {date, time} and weather {temp, humidity, cloud cover, pressure, weather condition, soil type}
 
-import { useIsFocused } from '@react-navigation/native';
-
-import { uploadImage } from '../api/photo';
-import { useMutation } from 'react-query';
-
-const CameraComponent = () => {
+const CameraScreen = () => {
   const isFocused = useIsFocused();
   const devices = useCameraDevices();
   let device = devices.back;
@@ -24,8 +24,17 @@ const CameraComponent = () => {
   const [tempImage, setTempImage] = useState(null);
   const [isFoucusing, setIsFoucusing] = useState(null);
   const [predication, setPredication] = useState(null);
-
+  const [showModal, setShowModal] = useState(false);
   const camera = useRef(null);
+  const { data } = useGetAuthToken();
+
+  useEffect(() => {
+    if (data.token) {
+      setShowModal(false);
+    } else {
+      setShowModal(true);
+    }
+  }, [data]);
 
   useEffect(() => {
     console.log('isFocused', isFocused);
@@ -289,8 +298,9 @@ const CameraComponent = () => {
           <Icon name="photo" size={30} color={theme.colors.white} />
         </TouchableOpacity>
       </View>
+      <AuthModal showModal={showModal} setShowModal={setShowModal} />
     </View>
   );
 };
 
-export default CameraComponent;
+export default CameraScreen;
