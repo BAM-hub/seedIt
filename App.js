@@ -1,14 +1,20 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@rneui/themed';
-import Auth from './screens/Auth';
-import CameraComponent from './components/CameraComponent';
 import Navigation from './screens/Navigation';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      staleTime: Infinity,
+    },
+    queryCache: {
+      defaultTimeToLive: Infinity,
+      cachTime: Infinity,
+      staleTime: Infinity,
+    },
+    mutations: {
       staleTime: Infinity,
     },
   },
@@ -43,10 +49,8 @@ const theme = createTheme({
 const App = () => {
   return (
     <SafeAreaView>
-      <QueryClientProvider client={queryClient} contextSharing={true}>
+      <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          {/* <Auth /> */}
-          {/* <CameraComponent /> */}
           <Navigation />
         </ThemeProvider>
       </QueryClientProvider>
