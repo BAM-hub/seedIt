@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Input, Icon, useTheme, Text, Button } from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextButton from './shared/TextButton';
