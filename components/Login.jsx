@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-// import { useMutation } from 'react-query';
 import { Input, Icon, useTheme, Text, Button } from '@rneui/themed';
-
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import TextButton from './shared/TextButton';
+import { login } from '../api/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Login = ({ toggleActive }) => {
-  // const Login = useMutation();
+const Login = ({ toggleActive, setShowModal }) => {
+  const queryClient = useQueryClient();
   const { theme } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  const loginMutation = useMutation({
+    mutationKey: ['user'],
+    mutationFn: () => login(email, password),
+    onSuccess: async ({ data }) => {
+      await AsyncStorage.setItem('@token', data.token);
+      setShowModal(false);
+      queryClient.setQueryData(['user'], data.user);
+    },
+    onError: error => {
+      console.log(error);
+    },
+  });
+
+  const handelSubmit = () => {
+    loginMutation.mutate();
+  };
   return (
     <View
       style={{
@@ -114,6 +131,7 @@ const Login = ({ toggleActive }) => {
           width: 150,
           borderRadius: 50,
         }}
+        onPress={handelSubmit}
       />
     </View>
   );
