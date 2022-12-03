@@ -8,10 +8,11 @@ import {
   ImageBackground,
   LayoutAnimation,
   NativeModules,
+  TouchableOpacity,
 } from 'react-native';
 import { Button } from '@rneui/base';
 import { useTheme } from '@rneui/themed';
-
+import Icon from 'react-native-vector-icons/AntDesign';
 import background from '../assets/background.jpeg';
 
 const { UIManager } = NativeModules;
@@ -19,7 +20,7 @@ const { UIManager } = NativeModules;
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-const Auth = () => {
+const Auth = ({ setShowModal }) => {
   const [margin, setMargin] = useState('300%');
   const [active, setActive] = useState();
   const { theme } = useTheme();
@@ -37,8 +38,26 @@ const Auth = () => {
   return (
     <View
       style={{
-        height: Dimensions.get('window').height,
+        height: '100%',
+        position: 'relative',
       }}>
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          width: 50,
+          height: 50,
+          borderRadius: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 100,
+          backgroundColor: theme.colors.naturalComplement,
+        }}
+        onPress={() => setShowModal(false)}>
+        <Icon name="close" size={30} color={theme.colors.primary} />
+      </TouchableOpacity>
+
       <ImageBackground
         source={background}
         style={{ ...styles.image, position: 'relative' }}>
