@@ -8,8 +8,8 @@ const AuthModal = ({ showModal, setShowModal }) => (
       <Modal
         visible={showModal}
         onDismiss={() => setShowModal(false)}
-        contentContainerStyle={{
-          width: '100%',
+        style={{
+          marginTop: 0,
         }}>
         <Auth setShowModal={setShowModal} />
       </Modal>
