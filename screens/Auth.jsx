@@ -70,7 +70,7 @@ const Auth = ({ setShowModal }) => {
                 position: 'absolute',
                 bottom: 0,
               }}>
-              <Login toggleActive={toggleActive} />
+              <Login toggleActive={toggleActive} setShowModal={setShowModal} />
             </View>
           ) : (
             <View
