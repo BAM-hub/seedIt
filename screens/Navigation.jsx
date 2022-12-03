@@ -1,54 +1,22 @@
 import { View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CameraComponent from '../components/CameraComponent';
-import { useMutation } from 'react-query';
-import Auth from './Auth';
 import Explore from './Explore';
+import CameraScreen from './Camera';
 // import { BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useTheme } from '@rneui/themed';
-import { loginWithToken } from '../api/user';
+import Profile from './Profile';
 
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
   const { theme } = useTheme();
-  const [auth, setAuth] = useState(true);
-
-  const autoLogin = useMutation({
-    mutationFn: async token => await loginWithToken(token),
-    onSuccess: async data => {
-      console.log('success', data);
-      if (data) {
-        await AsyncStorage.setItem('@token', data.token);
-      }
-    },
-    onError: _ => {
-      setAuth(false);
-    },
-  });
-  const getToken = async () => {
-    try {
-      const token = await AsyncStorage.getItem('@token');
-      // console.log(token);
-      if (token) autoLogin.mutate(token);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
-
-  if (!auth) return <Auth />;
 
   return (
     <NavigationContainer>
-      <View style={{ height: '100%', backgroundColor: 'red' }}>
+      <View style={{ height: '100%' }}>
         <Tab.Navigator
           initialRouteName="explore"
           activeColor={theme.colors.accent}
@@ -56,7 +24,7 @@ const Navigation = () => {
           barStyle={{ backgroundColor: theme.colors.primary }}>
           <Tab.Screen
             name="camera"
-            component={CameraComponent}
+            component={CameraScreen}
             options={{
               tabBarLabel: 'camera',
               tabBarIcon: () => <Icon name="camerao" size={25} color="white" />,
@@ -72,7 +40,7 @@ const Navigation = () => {
           />
           <Tab.Screen
             name="Profile"
-            component={Auth}
+            component={Profile}
             options={{
               tabBarLabel: 'profile',
               tabBarIcon: () => <Icon name="user" size={25} color="white" />,
