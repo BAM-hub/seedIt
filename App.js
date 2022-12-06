@@ -28,6 +28,8 @@ const theme = createTheme({
     natural: '#CBD7BF',
     naturalComplement: '#FAEED9',
     white: '#FFFFFF',
+    textLightBlack: '#4A4A4A',
+    black: '#000000',
   },
   inputContainerWrapper: {
     width: '90%',
@@ -43,6 +45,13 @@ const theme = createTheme({
   },
   textlight: {
     color: '#ABC09F',
+  },
+  inputContainerStylePrimary: {
+    borderBottomWidth: 0.5,
+    borderWidth: 0.5,
+    borderColor: '#ABC09F',
+    borderRadius: 30,
+    backgroundColor: 'white',
   },
 });
 
