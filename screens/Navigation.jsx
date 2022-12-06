@@ -7,7 +7,7 @@ import CameraScreen from './Camera';
 // import { BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { useTheme } from '@rneui/themed';
-import Profile from './Profile';
+import ProfileNavigation from './ProfileNavigation';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -40,7 +40,7 @@ const Navigation = () => {
           />
           <Tab.Screen
             name="Profile"
-            component={Profile}
+            component={ProfileNavigation}
             options={{
               tabBarLabel: 'profile',
               tabBarIcon: () => <Icon name="user" size={25} color="white" />,
