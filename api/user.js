@@ -1,23 +1,4 @@
-import axios from 'axios';
-
-const client = axios.create({
-  baseURL: 'http://10.0.2.2:8000/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-client.interceptors.response.use(
-  function (response) {
-    return response;
-  },
-  err => {
-    const { status } = err.response;
-    if (status === 401) {
-      throw new Error('Unauthorized');
-    }
-  },
-);
+import client from './client';
 
 export const register = async ({ firstName, lastName, email, password }) => {
   const res = await client.post(
@@ -28,7 +9,7 @@ export const register = async ({ firstName, lastName, email, password }) => {
       password,
     }),
   );
-  return res;
+  return res.data;
 };
 
 //login
