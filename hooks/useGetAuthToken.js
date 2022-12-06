@@ -18,13 +18,22 @@ export default useGetAuthToken = () => {
         console.log(error);
       }
     },
-    onSuccess: async ({ token }) => {
-      if (token) {
+    onSuccess: async ({ token, userId }) => {
+      if (!token) return;
+      try {
         await AsyncStorage.setItem('@token', token);
+        queryClient.setQueryData(['userAuth'], { token, userId });
+      } catch (error) {
+        console.log(error);
       }
     },
-    onError: _ => {
-      queryClient.clear();
+    onError: async _ => {
+      console.log('error');
+      try {
+        await AsyncStorage.removeItem('@token');
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
