@@ -80,7 +80,10 @@ const Auth = ({ setShowModal }) => {
                 position: 'absolute',
                 bottom: 0,
               }}>
-              <Register toggleActive={toggleActive} />
+              <Register
+                toggleActive={toggleActive}
+                setShowModal={setShowModal}
+              />
             </View>
           )
         ) : (
