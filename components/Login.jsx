@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import TextButton from './shared/TextButton';
 import { login } from '../api/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 const Login = ({ toggleActive, setShowModal }) => {
   const queryClient = useQueryClient();
@@ -23,7 +24,9 @@ const Login = ({ toggleActive, setShowModal }) => {
       queryClient.setQueryData(['user'], data.user);
     },
     onError: error => {
-      console.log(error);
+      console.log(error, 'query catch');
+      // replace alert with a ui element to show error
+      Alert.alert('Error', 'Invalid email or password');
     },
   });
 
