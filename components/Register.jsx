@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextButton from './shared/TextButton';
 import { register } from '../api/user';
 
-const Register = ({ toggleActive }) => {
+const Register = ({ toggleActive, setShowModal }) => {
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -20,9 +20,10 @@ const Register = ({ toggleActive }) => {
 
   const mutation = useMutation({
     mutationFn: () => register(user),
-    onSuccess: async data => {
+    onSuccess: async ({ data }) => {
       try {
-        await AsyncStorage.setItem('@token', data.data.token);
+        await AsyncStorage.setItem('@token', data.token);
+        setShowModal(false);
       } catch (e) {
         console.log(e);
       }

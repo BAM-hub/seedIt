@@ -9,7 +9,7 @@ export const register = async ({ firstName, lastName, email, password }) => {
       password,
     }),
   );
-  return res.data;
+  return res;
 };
 
 //login
