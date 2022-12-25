@@ -1,53 +1,44 @@
 import { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Image, useTheme, Input, Button } from '@rneui/themed';
-import { Dimensions } from 'react-native';
+import { useTheme, Input, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { uploadProfileImage } from '../api/profile';
 import InputPlaceholder from '../components/shared/InputPlaceHolder';
 import ImageModal from '../components/shared/ImageModal';
-import Avatar from '../assets/avatar.png';
-import useCreateProfile from '../hooks/useCreateProfile';
+import ProfileImage from '../components/profile/ProfileImage';
+import SnackBar from '../components/shared/SnackBar';
+import useMutateProfile from '../hooks/useMutateProfile';
+import useGetAuthToken from '../hooks/useGetAuthToken';
 import LottieAnimation from 'lottie-react-native';
 
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
-const SCREEN_WIDTH = Dimensions.get('screen').width;
+const initialProfile = {
+  profileUserName: '',
+  address: '',
+  bio: '',
+};
 
 const CreateProfile = ({ navigation }) => {
-  const { data } = useQuery(['userProfile']);
+  const { data: cahceProfile } = useQuery(['userProfile']);
+  const { data: user } = useGetAuthToken();
   const { theme } = useTheme();
-  const queryClient = useQueryClient();
+  const [readyToUpload, setReadyToUpload] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [tempImage, setTempImage] = useState(null);
   const [error, setError] = useState(null);
-  const [profile, setProfile] = useState(
-    data
-      ? data
-      : {
-          profileUserName: '',
-          address: '',
-          bio: '',
-        },
-  );
+  const [profile, setProfile] = useState(cahceProfile || initialProfile);
 
-  const createProfileMutation = useCreateProfile(profile);
-  console.log('profile', profile);
-  const uploadImageMutation = useMutation({
-    mutationKey: ['uploadImage'],
-    mutationFn: () => uploadProfileImage(),
-    onSuccess: () => {
-      console.log('success');
-    },
-    onError: () => {
-      console.log('error');
-    },
-  });
+  const { mutateProfile, isLoading } = useMutateProfile(
+    profile,
+    user,
+    cahceProfile ? 'update' : 'create',
+    () => navigation.goBack(),
+  );
 
   const handleSubmit = () => {
     if (profile.profileUserName === '')
       return setError('Please enter your profile name');
-    createProfileMutation.mutate();
+    mutateProfile();
   };
 
   return (
@@ -56,11 +47,23 @@ const CreateProfile = ({ navigation }) => {
         flex: 1,
         justifyContent: 'space-evenly',
       }}>
-      <ProfileImage
-        setShowModal={setShowModal}
-        tempImage={tempImage}
-        navigation={navigation}
-      />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={{ position: 'absolute', top: 10, left: 10 }}>
+        <Icon name="arrow-left" size={30} color={theme.colors.black} />
+      </TouchableOpacity>
+      <View
+        style={{
+          marginTop: 30,
+        }}>
+        <ProfileImage
+          setShowModal={setShowModal}
+          tempImage={tempImage}
+          parent="createProfile"
+          readyToUpload={readyToUpload}
+        />
+      </View>
+
       <View
         style={{
           alignItems: 'center',
@@ -73,13 +76,13 @@ const CreateProfile = ({ navigation }) => {
             fontWeight: 'bold',
             color: theme.colors.textLightBlack,
           }}>
-          Create Profile
+          {cahceProfile ? 'Update Profile' : 'Create Profile'}
         </Text>
         <Text style={{ fontSize: 15, color: 'grey' }}>Add your details</Text>
       </View>
       <ProfileInput profile={profile} setProfile={setProfile} error={error} />
       <Button
-        title="Create Profile"
+        title={cahceProfile ? 'Update Profile' : 'Create Profile'}
         containerStyle={{
           alignSelf: 'center',
           paddingHorizontal: 15,
@@ -97,99 +100,10 @@ const CreateProfile = ({ navigation }) => {
         showModal={showModal}
         setShowModal={setShowModal}
         setTempImage={setTempImage}
+        callback={() => setReadyToUpload(true)}
       />
+      {isLoading && <LoadingOverlay />}
       {/* <SnackBar /> */}
-    </View>
-  );
-};
-
-const ProfileImage = ({ setShowModal, tempImage, navigation }) => {
-  const { theme } = useTheme();
-  return (
-    <View
-      style={{
-        height: SCREEN_HEIGHT / 3,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={{ position: 'absolute', top: 10, left: 10 }}>
-        <Icon name="arrow-left" size={30} color={theme.colors.black} />
-      </TouchableOpacity>
-      <View>
-        <View
-          style={{
-            position: 'relative',
-          }}>
-          <Image
-            containerStyle={{
-              borderRadius: 200,
-              alignSelf: 'center',
-              position: 'relative',
-              marginHorizontal: 'auto',
-              width: SCREEN_WIDTH / 1.5,
-              height: SCREEN_WIDTH / 1.5,
-            }}
-            style={{
-              borderRadius: 200,
-              width: SCREEN_WIDTH / 1.5,
-              height: SCREEN_WIDTH / 1.5,
-            }}
-            source={tempImage ? { uri: tempImage } : Avatar}
-          />
-          <View
-            style={{
-              width: SCREEN_WIDTH / 1.5,
-              height: SCREEN_WIDTH / 1.5,
-              position: 'absolute',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 200,
-              backgroundColor: '#5a5a5a7f',
-            }}>
-            <LottieAnimation
-              style={{
-                width: 200,
-              }}
-              autoSize
-              autoPlay
-              loop
-              source={require('../assets/animations/uploading.json')}
-            />
-          </View>
-        </View>
-        <Button
-          containerStyle={{
-            borderRadius: 35,
-            position: 'absolute',
-            bottom: 0,
-            right: -20,
-            borderRadius: 100,
-            flexDirection: 'row',
-            alignItems: 'center',
-            color: theme.colors.black,
-          }}
-          buttonStyle={{
-            borderRadius: 100,
-            backgroundColor: theme.colors.white,
-            padding: 5,
-          }}
-          titleStyle={{
-            color: 'black',
-          }}
-          onPress={() => {
-            setShowModal(true);
-          }}>
-          <Icon
-            name="circle-edit-outline"
-            size={25}
-            color={theme.colors.black}
-          />
-          <Text>Upload</Text>
-        </Button>
-      </View>
     </View>
   );
 };
@@ -239,5 +153,37 @@ const ProfileInput = ({ profile, setProfile, error }) => {
     </View>
   );
 };
+
+const LoadingOverlay = () => (
+  <View
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: '#ffffff7c',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
+    <View
+      style={{
+        position: 'absolute',
+        top: 0,
+        height: '70%',
+      }}>
+      <LottieAnimation
+        source={require('../assets/animations/DecorePlant.json')}
+        autoPlay
+        loop
+        style={{
+          height: '100%',
+          width: '100%',
+        }}
+        speed={1.5}
+      />
+    </View>
+  </View>
+);
 
 export default CreateProfile;
