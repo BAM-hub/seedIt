@@ -20,6 +20,9 @@ client.interceptors.response.use(
     if (status === 500) {
       throw new Error('Server Error');
     }
+    if (status === 401) {
+      throw new Error('Not Found');
+    }
   },
 );
 
