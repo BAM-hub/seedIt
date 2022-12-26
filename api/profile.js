@@ -28,14 +28,16 @@ export const updateProfile = async ({ profile, token, userId }) => {
 
 export const uploadProfileImage = async ({ image, id }) => {
   const formData = new FormData();
-  formData.append('image', image, image.name || 'image.jpg');
-  console.log({ image, id });
+  formData.append('image', {
+    uri: image.uri,
+    type: image.type,
+    name: image.fileName || image.uri.split('/').pop(),
+  });
+
   const token = await AsyncStorage.getItem('@token');
-  console.log({ formData });
   const res = await client.post(`/profile/UploadProfileImage/${id}`, formData, {
     headers: {
-      'content-type': 'multipart/encrypted',
-
+      'Content-Type': 'multipart/form-data',
       'x-auth-token': token,
     },
   });
