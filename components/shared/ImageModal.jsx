@@ -7,7 +7,13 @@ import Animated from 'react-native-reanimated';
 import { launchImageLibrary } from 'react-native-image-picker';
 import usePopUpSpring from '../../hooks/usePopupSpring';
 
-const ImageModal = ({ setShowModal, showModal, setTempImage, callback }) => {
+const ImageModal = ({
+  setShowModal,
+  showModal,
+  setImageURI,
+  setImage,
+  callback,
+}) => {
   const animatedStyles = usePopUpSpring(showModal);
 
   const { theme } = useTheme();
@@ -80,8 +86,9 @@ const ImageModal = ({ setShowModal, showModal, setTempImage, callback }) => {
                 onPressIn={() =>
                   launchImageLibrary({}, data => {
                     if (!data.didCancel) {
-                      setTempImage(data.assets[0].uri);
+                      setImageURI(data.assets[0].uri);
                       setShowModal(false);
+                      setImage(data.assets[0]);
                       callback();
                     }
                   })

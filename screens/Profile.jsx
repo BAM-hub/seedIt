@@ -1,8 +1,8 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import React from 'react';
 import ProfileImage from '../components/profile/ProfileImage';
 import { useQuery } from '@tanstack/react-query';
-import { useTheme, Image, Button } from '@rneui/themed';
+import { useTheme, Button } from '@rneui/themed';
 import { ScrollView } from 'react-native';
 import { ImageBackground } from 'react-native';
 
@@ -42,7 +42,7 @@ const Profile = ({ navigation }) => {
       <ProfileImage
         navigation={navigation}
         setShowModal={false}
-        tempImage={null}
+        imageURI={data.profilePic}
       />
       <ProfileDetails data={data} />
       <PlantCards plants={plants} />
@@ -66,6 +66,7 @@ const Profile = ({ navigation }) => {
 };
 
 const ProfileDetails = ({ data }) => {
+  console.log('this', data);
   const { theme } = useTheme();
   return (
     <View

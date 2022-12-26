@@ -24,7 +24,8 @@ const CreateProfile = ({ navigation }) => {
   const { theme } = useTheme();
   const [readyToUpload, setReadyToUpload] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [tempImage, setTempImage] = useState(null);
+  const [imageURI, setImageURI] = useState(cahceProfile.profilePic);
+  const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
   const [profile, setProfile] = useState(cahceProfile || initialProfile);
 
@@ -58,9 +59,11 @@ const CreateProfile = ({ navigation }) => {
         }}>
         <ProfileImage
           setShowModal={setShowModal}
-          tempImage={tempImage}
+          imageURI={imageURI}
           parent="createProfile"
           readyToUpload={readyToUpload}
+          image={image}
+          navigation={navigation}
         />
       </View>
 
@@ -99,8 +102,9 @@ const CreateProfile = ({ navigation }) => {
       <ImageModal
         showModal={showModal}
         setShowModal={setShowModal}
-        setTempImage={setTempImage}
+        setImageURI={setImageURI}
         callback={() => setReadyToUpload(true)}
+        setImage={setImage}
       />
       {isLoading && <LoadingOverlay />}
       {/* <SnackBar /> */}
