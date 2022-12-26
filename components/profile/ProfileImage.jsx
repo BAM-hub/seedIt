@@ -1,17 +1,24 @@
-import { useState } from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { Image, useTheme, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Avatar from '../../assets/avatar.png';
 import LottieAnimation from 'lottie-react-native';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadProfileImage } from '../../api/profile';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const ProfileImage = ({ setShowModal, tempImage, parent, readyToUpload }) => {
+const ProfileImage = ({
+  setShowModal,
+  imageURI,
+  parent,
+  readyToUpload,
+  image,
+  navigation,
+}) => {
   const { theme } = useTheme();
+  const queryClient = useQueryClient();
   const {
     data: { userId },
   } = useGetAuthToken();
@@ -19,11 +26,12 @@ const ProfileImage = ({ setShowModal, tempImage, parent, readyToUpload }) => {
     mutationKey: ['uploadImage'],
     mutationFn: () =>
       uploadProfileImage({
-        image: tempImage,
+        image: image,
         id: userId,
       }),
-    onSuccess: () => {
-      console.log('success');
+    onSuccess: ({ data }) => {
+      queryClient.setQueryData(['userProfile'], data.profile);
+      navigation.goBack();
     },
     onError: () => {
       console.log('error');
@@ -70,7 +78,7 @@ const ProfileImage = ({ setShowModal, tempImage, parent, readyToUpload }) => {
             height: SCREEN_WIDTH / 1.5,
           }}
           loadingIndicatorSource={LoadingAimantion}
-          source={tempImage ? { uri: tempImage } : Avatar}
+          source={imageURI ? { uri: imageURI } : Avatar}
         />
 
         {uploadImageMutation.isLoading && <LoadingAimantion />}
