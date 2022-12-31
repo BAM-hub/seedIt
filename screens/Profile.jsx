@@ -1,14 +1,17 @@
 import { View, Text } from 'react-native';
-import React from 'react';
 import ProfileImage from '../components/profile/ProfileImage';
 import { useQuery } from '@tanstack/react-query';
 import { useTheme, Button } from '@rneui/themed';
 import { ScrollView } from 'react-native';
 import { ImageBackground } from 'react-native';
+import LottieAnimation from 'lottie-react-native';
+import useGetProfile from '../hooks/useGetProfile';
+import useGetAuthToken from '../hooks/useGetAuthToken';
 
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
-  const { data } = useQuery(['userProfile']);
+  const { data: profile } = useGetProfile();
+  const { data: user } = useGetAuthToken();
   const plants = [
     {
       name: 'Plant 1',
@@ -31,8 +34,6 @@ const Profile = ({ navigation }) => {
       image: 'https://picsum.photos/200',
     },
   ];
-  console.log('data', data);
-  // no gaback here
   return (
     <View
       style={{
@@ -42,25 +43,32 @@ const Profile = ({ navigation }) => {
       <ProfileImage
         navigation={navigation}
         setShowModal={false}
-        imageURI={data.profilePic}
+        imageURI={profile?.profilePic}
       />
-      <ProfileDetails data={data} />
-      <PlantCards plants={plants} />
-      <Button
-        onPress={() => navigation.navigate('createProfile')}
-        containerStyle={{
-          alignSelf: 'center',
-          paddingHorizontal: 15,
-          borderRadius: 30,
-        }}
-        buttonStyle={{
-          padding: 15,
-          paddingHorizontal: 30,
-          backgroundColor: theme.colors.primary,
-          borderRadius: 30,
-        }}
-        title="Edit Profile"
-      />
+      <ProfileDetails data={profile} />
+      {profile?.plants ? (
+        <PlantCards plants={profile?.plants} />
+      ) : (
+        <NoPlantsCard />
+      )}
+
+      {user?.token && (
+        <Button
+          onPress={() => navigation.navigate('createProfile')}
+          containerStyle={{
+            alignSelf: 'center',
+            paddingHorizontal: 15,
+            borderRadius: 30,
+          }}
+          buttonStyle={{
+            padding: 15,
+            paddingHorizontal: 30,
+            backgroundColor: theme.colors.primary,
+            borderRadius: 30,
+          }}
+          title="Edit Profile"
+        />
+      )}
     </View>
   );
 };
@@ -95,51 +103,108 @@ const ProfileDetails = ({ data }) => {
           fontWeight: 'bold',
           color: theme.colors.primary,
         }}>
-        {data?.profileUserName}
+        {data?.profileUserName ?? 'No Name'}
       </Text>
       <Text
         style={{
           fontSize: 20,
-          // fontWeight: 'light',
           color: theme.colors.natural,
         }}>
-        {data?.address}
+        {data?.address ?? 'No Address'}
       </Text>
       <Text
         style={{
           fontSize: 15,
-          // fontWeight: 'light',
           color: theme.colors.natural,
         }}>
-        {data?.bio}
+        {data?.bio ?? 'No Bio'}
       </Text>
     </View>
   );
 };
 
-const PlantCards = ({ plants }) => {
+const NoPlantsCard = () => {
   const { theme } = useTheme();
   return (
-    <View
-      style={{
-        flex: 0.4,
-        width: '95%',
-        alignSelf: 'flex-end',
-        backgroundColor: '#fff',
-        padding: 10,
-        borderRadius: 10,
-        paddingVertical: 10,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
-        shadowColor: theme.colors.primary,
-        shadowOffset: {
-          width: 0,
-          height: 5,
-        },
-        shadowOpacity: 0.36,
-        shadowRadius: 6.68,
-        elevation: 11,
-      }}>
+    <PlantCardWrapper>
+      <View
+        style={{
+          flexDirection: 'row',
+        }}>
+        <LottieAnimation
+          source={require('../assets/animations/seeding.json')}
+          autoPlay
+          loop
+          style={{
+            height: '100%',
+            alignSelf: 'flex-start',
+          }}
+        />
+        <View
+          style={{
+            paddingHorizontal: 15,
+            justifyContent: 'space-around',
+          }}>
+          <View
+            style={{
+              width: '80%',
+              height: '60%',
+              justifyContent: 'space-evenly',
+            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                color: theme.colors.primary,
+                fontWeight: 'bold',
+              }}>
+              No Plants to show
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                color: theme.colors.natural,
+              }}>
+              Add plants to your profile to show them here
+            </Text>
+          </View>
+
+          <View
+            style={{
+              height: '40%',
+              justifyContent: 'flex-end',
+            }}>
+            <Button
+              containerStyle={{
+                alignSelf: 'flex-start',
+                paddingHorizontal: 7.5,
+                borderRadius: 15,
+              }}
+              buttonStyle={{
+                padding: 7.5,
+                paddingHorizontal: 15,
+                backgroundColor: theme.colors.primary,
+                borderRadius: 15,
+              }}>
+              <Text
+                style={{
+                  color: theme.colors.white,
+                  fontWeight: 'bold',
+                }}>
+                Add Plants
+              </Text>
+            </Button>
+          </View>
+        </View>
+      </View>
+    </PlantCardWrapper>
+  );
+};
+
+const PlantCards = ({ plants }) => {
+  const { theme } = useTheme();
+
+  return (
+    <PlantCardWrapper>
       <Text
         style={{
           alignSelf: 'center',
@@ -194,7 +259,36 @@ const PlantCards = ({ plants }) => {
           </View>
         ))}
       </ScrollView>
+    </PlantCardWrapper>
+  );
+};
+
+const PlantCardWrapper = ({ children }) => {
+  const { theme } = useTheme();
+  return (
+    <View
+      style={{
+        flex: 0.4,
+        width: '95%',
+        alignSelf: 'flex-end',
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 10,
+        paddingVertical: 10,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+        shadowColor: theme.colors.primary,
+        shadowOffset: {
+          width: 0,
+          height: 5,
+        },
+        shadowOpacity: 0.36,
+        shadowRadius: 6.68,
+        elevation: 11,
+      }}>
+      {children}
     </View>
   );
 };
+
 export default Profile;
