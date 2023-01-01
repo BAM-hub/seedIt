@@ -1,9 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createProfile, updateProfile } from '../api/profile';
+import useProfileStore from '../store/profileStore';
+import useUserStore from '../store/userStore';
 
-export default useMutateProfile = (profile, user, type, callback) => {
+export default useMutateProfile = (profile, type, callback) => {
   const queryClient = useQueryClient();
-  const { token, userId } = user;
+  const { token, id } = useUserStore(state => state.user);
+  const { setProfile } = useProfileStore();
   if (type === 'create') {
     const createProfileMutation = useMutation({
       mutationKey: ['createProfile'],
@@ -11,10 +14,10 @@ export default useMutateProfile = (profile, user, type, callback) => {
         createProfile({
           profile,
           token,
-          userId,
+          userId: id,
         }),
-      onSuccess: data => {
-        queryClient.setQueryData(['userProfile'], data.data);
+      onSuccess: ({ data }) => {
+        setProfile(data);
         callback();
       },
       onError: () => {
@@ -34,10 +37,10 @@ export default useMutateProfile = (profile, user, type, callback) => {
         updateProfile({
           profile,
           token,
-          userId,
+          userId: id,
         }),
-      onSuccess: data => {
-        queryClient.setQueryData(['userProfile'], data.data);
+      onSuccess: ({ data }) => {
+        setProfile(data);
         callback();
       },
       onError: () => {

@@ -30,7 +30,6 @@ const CreateProfile = ({ navigation }) => {
 
   const { mutateProfile, isLoading } = useMutateProfile(
     profile,
-    user,
     profile ? 'update' : 'create',
     () => navigation.goBack(),
   );
