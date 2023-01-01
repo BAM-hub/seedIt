@@ -6,16 +6,11 @@ import { Dimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { launchImageLibrary } from 'react-native-image-picker';
 import usePopUpSpring from '../../hooks/usePopupSpring';
+import useProfileStore from '../../store/profileStore';
 
-const ImageModal = ({
-  setShowModal,
-  showModal,
-  setImageURI,
-  setImage,
-  callback,
-}) => {
+const ImageModal = ({ setShowModal, showModal, callback }) => {
   const animatedStyles = usePopUpSpring(showModal);
-
+  const { setUploadingImage } = useProfileStore();
   const { theme } = useTheme();
   return (
     <Provider>
@@ -86,9 +81,8 @@ const ImageModal = ({
                 onPressIn={() =>
                   launchImageLibrary({}, data => {
                     if (!data.didCancel) {
-                      setImageURI(data.assets[0].uri);
                       setShowModal(false);
-                      setImage(data.assets[0]);
+                      setUploadingImage(data.assets[0]);
                       callback();
                     }
                   })

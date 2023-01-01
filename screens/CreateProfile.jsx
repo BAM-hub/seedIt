@@ -11,6 +11,7 @@ import SnackBar from '../components/shared/SnackBar';
 import useMutateProfile from '../hooks/useMutateProfile';
 import useGetAuthToken from '../hooks/useGetAuthToken';
 import LottieAnimation from 'lottie-react-native';
+import useProfileStore from '../store/profileStore';
 
 const initialProfile = {
   profileUserName: '',
@@ -19,20 +20,18 @@ const initialProfile = {
 };
 
 const CreateProfile = ({ navigation }) => {
-  const { data: cahceProfile } = useQuery(['userProfile']);
+  const { profile: cahcedProfile } = useProfileStore();
   const { data: user } = useGetAuthToken();
   const { theme } = useTheme();
   const [readyToUpload, setReadyToUpload] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [imageURI, setImageURI] = useState(cahceProfile.profilePic);
-  const [image, setImage] = useState(null);
+  const [profile, setProfile] = useState(cahcedProfile);
   const [error, setError] = useState(null);
-  const [profile, setProfile] = useState(cahceProfile || initialProfile);
 
   const { mutateProfile, isLoading } = useMutateProfile(
     profile,
     user,
-    cahceProfile ? 'update' : 'create',
+    profile ? 'update' : 'create',
     () => navigation.goBack(),
   );
 
@@ -59,10 +58,8 @@ const CreateProfile = ({ navigation }) => {
         }}>
         <ProfileImage
           setShowModal={setShowModal}
-          imageURI={imageURI}
           parent="createProfile"
           readyToUpload={readyToUpload}
-          image={image}
           navigation={navigation}
         />
       </View>
@@ -79,13 +76,13 @@ const CreateProfile = ({ navigation }) => {
             fontWeight: 'bold',
             color: theme.colors.textLightBlack,
           }}>
-          {cahceProfile ? 'Update Profile' : 'Create Profile'}
+          {profile?.id ? 'Update Profile' : 'Create Profile'}
         </Text>
         <Text style={{ fontSize: 15, color: 'grey' }}>Add your details</Text>
       </View>
       <ProfileInput profile={profile} setProfile={setProfile} error={error} />
       <Button
-        title={cahceProfile ? 'Update Profile' : 'Create Profile'}
+        title={profile?.id ? 'Update Profile' : 'Create Profile'}
         containerStyle={{
           alignSelf: 'center',
           paddingHorizontal: 15,
@@ -102,9 +99,7 @@ const CreateProfile = ({ navigation }) => {
       <ImageModal
         showModal={showModal}
         setShowModal={setShowModal}
-        setImageURI={setImageURI}
         callback={() => setReadyToUpload(true)}
-        setImage={setImage}
       />
       {isLoading && <LoadingOverlay />}
       {/* <SnackBar /> */}
@@ -113,6 +108,7 @@ const CreateProfile = ({ navigation }) => {
 };
 
 const ProfileInput = ({ profile, setProfile, error }) => {
+  console.log('profile', profile);
   const { theme } = useTheme();
   return (
     <View

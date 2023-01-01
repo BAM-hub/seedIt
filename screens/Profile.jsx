@@ -7,10 +7,12 @@ import { ImageBackground } from 'react-native';
 import LottieAnimation from 'lottie-react-native';
 import useGetProfile from '../hooks/useGetProfile';
 import useGetAuthToken from '../hooks/useGetAuthToken';
+import useProfileStore from '../store/profileStore';
 
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
-  const { data: profile } = useGetProfile();
+  const profile = useProfileStore(state => state.profile);
+  console.log('profile', profile);
   const { data: user } = useGetAuthToken();
   const plants = [
     {
@@ -40,11 +42,7 @@ const Profile = ({ navigation }) => {
         flex: 1,
         justifyContent: 'space-evenly',
       }}>
-      <ProfileImage
-        navigation={navigation}
-        setShowModal={false}
-        imageURI={profile?.profilePic}
-      />
+      <ProfileImage navigation={navigation} setShowModal={false} />
       <ProfileDetails data={profile} />
       {profile?.plants ? (
         <PlantCards plants={profile?.plants} />
