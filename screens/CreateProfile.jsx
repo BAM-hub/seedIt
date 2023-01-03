@@ -2,26 +2,16 @@ import { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useTheme, Input, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import { uploadProfileImage } from '../api/profile';
 import InputPlaceholder from '../components/shared/InputPlaceHolder';
 import ImageModal from '../components/shared/ImageModal';
 import ProfileImage from '../components/profile/ProfileImage';
 import SnackBar from '../components/shared/SnackBar';
 import useMutateProfile from '../hooks/useMutateProfile';
-import useGetAuthToken from '../hooks/useGetAuthToken';
 import LottieAnimation from 'lottie-react-native';
 import useProfileStore from '../store/profileStore';
 
-const initialProfile = {
-  profileUserName: '',
-  address: '',
-  bio: '',
-};
-
 const CreateProfile = ({ navigation }) => {
   const { profile: cahcedProfile } = useProfileStore();
-  const { data: user } = useGetAuthToken();
   const { theme } = useTheme();
   const [readyToUpload, setReadyToUpload] = useState(false);
   const [showModal, setShowModal] = useState(false);
