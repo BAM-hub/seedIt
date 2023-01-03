@@ -6,9 +6,15 @@ import { Image } from '@rneui/themed';
 import { TextInput } from 'react-native';
 import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
 import SLI from 'react-native-vector-icons/SimpleLineIcons';
+import useGetPosts from '../hooks/useGetPosts';
+import usePostsStore from '../store/postsStore';
 
-const CommunityScreen = () => {
+const CommunityScreen = ({ navigation }) => {
   const { theme } = useTheme();
+  const { posts } = usePostsStore();
+
+  useGetPosts();
+  console.log({ posts });
   const [isOpen, setIsOpen] = useState(false);
   return (
     <>
@@ -37,7 +43,10 @@ const CommunityScreen = () => {
         onClose={() => setIsOpen(!isOpen)}>
         <SpeedDial.Action
           icon={() => <MCI name="plus" color={theme.colors.white} size={20} />}
-          onPress={() => console.log('Pressed add')}
+          onPress={() => {
+            setIsOpen(false);
+            navigation.navigate('CreatePost');
+          }}
         />
       </SpeedDial>
     </>
