@@ -2,13 +2,14 @@ import { View } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import Explore from './Explore';
-import CameraScreen from './Camera';
 // import { BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
+import MI from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@rneui/themed';
 import ProfileNavigation from './ProfileNavigation';
-
+import CommunityNavigation from './CommunityNavigation';
+import Explore from '../screens/Explore';
+import CameraScreen from '../screens/Camera';
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
@@ -36,6 +37,14 @@ const Navigation = () => {
             options={{
               tabBarLabel: 'explore',
               tabBarIcon: () => <Icon name="home" size={25} color="white" />,
+            }}
+          />
+          <Tab.Screen
+            name="Community"
+            component={CommunityNavigation}
+            options={{
+              tabBarLabel: 'community',
+              tabBarIcon: () => <MI name="explore" size={25} color="white" />,
             }}
           />
           <Tab.Screen
