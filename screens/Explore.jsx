@@ -12,8 +12,10 @@ import AntdIcon from 'react-native-vector-icons/AntDesign';
 import { Modal, Portal, Provider } from 'react-native-paper';
 import useGetAuthToken from '../hooks/useGetAuthToken';
 import AuthModal from '../components/shared/AuthModal';
+import useGetPosts from '../hooks/useGetPosts';
 
 const Explore = () => {
+  useGetPosts();
   const { data, isLoading, isError } = useGetAuthToken();
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
