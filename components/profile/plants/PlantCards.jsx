@@ -1,8 +1,15 @@
-import { View, Text, ScrollView, ImageBackground } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 import PlantCardWrapper from './PlantsCardWrapper';
 import { useTheme } from '@rneui/themed';
+import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const PlantCards = ({ plants }) => {
+const PlantCards = ({ plants, setActivePlant }) => {
   const { theme } = useTheme();
 
   return (
@@ -17,8 +24,21 @@ const PlantCards = ({ plants }) => {
         Plants
       </Text>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={{
+            width: 100,
+            margin: 10,
+            backgroundColor: theme.colors.secondary,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <MCI name="plus" size={40} color={theme.colors.white} />
+          <Text style={{ color: theme.colors.white }}> Add a plant</Text>
+        </TouchableOpacity>
         {plants.map((plant, index) => (
-          <View
+          <TouchableOpacity
             key={index}
             style={{
               width: 100,
@@ -27,7 +47,9 @@ const PlantCards = ({ plants }) => {
               borderRadius: 10,
               alignItems: 'center',
               overflow: 'hidden',
-            }}>
+            }}
+            activeOpacity={0.5}
+            onPress={() => setActivePlant(plant)}>
             <ImageBackground
               key={index}
               source={{ uri: plant.image }}
@@ -54,11 +76,11 @@ const PlantCards = ({ plants }) => {
                     fontSize: 15,
                     fontWeight: 'bold',
                   }}>
-                  {plant.name}
+                  {plant.commonName}
                 </Text>
               </View>
             </ImageBackground>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </PlantCardWrapper>
