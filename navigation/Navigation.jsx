@@ -4,12 +4,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 // import { BottomNavigation } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
+import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
 import MI from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@rneui/themed';
 import ProfileNavigation from './ProfileNavigation';
 import CommunityNavigation from './CommunityNavigation';
 import Explore from '../screens/Explore';
 import CameraScreen from '../screens/Camera';
+import MyGardenScreen from '../screens/MyGardenScreen';
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
@@ -45,6 +47,16 @@ const Navigation = () => {
             options={{
               tabBarLabel: 'community',
               tabBarIcon: () => <MI name="explore" size={25} color="white" />,
+            }}
+          />
+          <Tab.Screen
+            name="myGarden"
+            component={MyGardenScreen}
+            options={{
+              tabBarLabel: 'my garden',
+              tabBarIcon: () => (
+                <MCI name="palm-tree" size={25} color="white" />
+              ),
             }}
           />
           <Tab.Screen
