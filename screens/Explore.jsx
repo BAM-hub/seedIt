@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Chip, Image, Input, useTheme } from '@rneui/themed';
@@ -13,8 +14,10 @@ import { Modal, Portal, Provider } from 'react-native-paper';
 import useGetAuthToken from '../hooks/useGetAuthToken';
 import AuthModal from '../components/shared/AuthModal';
 import useGetPosts from '../hooks/useGetPosts';
+import PlantsCatigories from '../components/plants/PlantsCatigories';
+import { SharedElement } from 'react-navigation-shared-element';
 
-const Explore = () => {
+const Explore = ({ navigation }) => {
   useGetPosts();
   const { data, isLoading, isError } = useGetAuthToken();
   const { theme } = useTheme();
@@ -179,63 +182,7 @@ const Explore = () => {
           horizontal
           showsHorizontalScrollIndicator={false}
         />
-        <View
-          style={{
-            marginTop: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            position: 'relative',
-          }}>
-          <Image
-            source={{
-              uri: 'https://i.pinimg.com/564x/6f/e0/bf/6fe0bf5a6aeaaaf27f6ea247df228dee.jpg',
-            }}
-            containerStyle={{
-              width: '90%',
-              height: 250,
-              position: 'relative',
-            }}
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            PlaceholderContent={<Text>Loading...</Text>}
-          />
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: 'bold',
-              color: 'white',
-              position: 'absolute',
-              left: 40,
-              top: 200,
-            }}>
-            TUT
-          </Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {tags.map(tag => (
-              <TouchableOpacity key={tag.id}>
-                <Chip
-                  type="outline"
-                  containerStyle={{
-                    margin: 10,
-                    borderRadius: 20,
-                    borderWidth: 1,
-                    borderColor: theme.colors.primary,
-                  }}>
-                  <Text
-                    style={{
-                      color: theme.colors.primary,
-                      fontSize: 15,
-                      fontWeight: '600',
-                    }}>
-                    {tag.name}
-                  </Text>
-                </Chip>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+        <PlantsCatigories navigation={navigation} />
         <Text
           style={{
             fontSize: 25,
@@ -376,6 +323,19 @@ const Explore = () => {
       <AuthModal showModal={showAuthModal} setShowModal={setShowAuthModal} />
 
       <ProfileModal showModal={showModal} setShowModal={setShowModal} />
+
+      <SharedElement id="general.bg">
+        <View
+          style={{
+            position: 'absolute',
+            width: Dimensions.get('screen').width,
+            height: Dimensions.get('screen').height,
+            backgroundColor: 'white',
+            transform: [{ translateY: Dimensions.get('screen').height }],
+            borderRadius: 20,
+          }}
+        />
+      </SharedElement>
     </View>
   );
 };
@@ -450,6 +410,66 @@ const ProfileModal = ({ showModal, setShowModal }) => (
       </Modal>
     </Portal>
   </Provider>
+);
+
+const unused = () => (
+  <View
+    style={{
+      marginTop: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+    }}>
+    <Image
+      source={{
+        uri: 'https://i.pinimg.com/564x/6f/e0/bf/6fe0bf5a6aeaaaf27f6ea247df228dee.jpg',
+      }}
+      containerStyle={{
+        width: '90%',
+        height: 250,
+        position: 'relative',
+      }}
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+      PlaceholderContent={<Text>Loading...</Text>}
+    />
+    <Text
+      style={{
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'white',
+        position: 'absolute',
+        left: 40,
+        top: 200,
+      }}>
+      TUT
+    </Text>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      {tags.map(tag => (
+        <TouchableOpacity key={tag.id}>
+          <Chip
+            type="outline"
+            containerStyle={{
+              margin: 10,
+              borderRadius: 20,
+              borderWidth: 1,
+              borderColor: theme.colors.primary,
+            }}>
+            <Text
+              style={{
+                color: theme.colors.primary,
+                fontSize: 15,
+                fontWeight: '600',
+              }}>
+              {tag.name}
+            </Text>
+          </Chip>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  </View>
 );
 
 export default Explore;
