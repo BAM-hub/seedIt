@@ -2,12 +2,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  FlatList,
   ScrollView,
   Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { Chip, Image, Input, useTheme } from '@rneui/themed';
+import { Input, useTheme } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntdIcon from 'react-native-vector-icons/AntDesign';
 import { Modal, Portal, Provider } from 'react-native-paper';
@@ -16,6 +15,7 @@ import AuthModal from '../components/shared/AuthModal';
 import useGetPosts from '../hooks/useGetPosts';
 import PlantsCatigories from '../components/plants/PlantsCatigories';
 import { SharedElement } from 'react-navigation-shared-element';
+import Post from '../components/community/Post';
 
 const Explore = ({ navigation }) => {
   useGetPosts();
@@ -24,37 +24,6 @@ const Explore = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-      title: 'Getting Started',
-      userName: 'John Doe',
-      userImage: 'https://i.pravatar.cc/150?img=1',
-      tags: ['Nature', 'Learning', 'Getting Started'],
-      liked: false,
-    },
-    {
-      id: 2,
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-      title: 'Getting Started',
-      userName: 'John Doe',
-      userImage: 'https://i.pravatar.cc/150?img=1',
-      tags: ['Nature', 'Learning', 'Getting Started'],
-      liked: true,
-    },
-    {
-      id: 3,
-      image: '',
-      title: 'Getting Started',
-      userName: 'John Doe',
-      userImage: '',
-      tags: ['Nature', 'Learning', 'Getting Started'],
-      liked: true,
-    },
-  ]);
   useEffect(() => {
     if (!data) {
       setShowAuthModal(true);
@@ -107,7 +76,12 @@ const Explore = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        <PlantsCatigories navigation={navigation} />
+        <View
+          style={{
+            marginTop: 20,
+          }}>
+          <PlantsCatigories navigation={navigation} />
+        </View>
         <Text
           style={{
             fontSize: 25,
@@ -118,132 +92,9 @@ const Explore = ({ navigation }) => {
           }}>
           Community
         </Text>
-        {posts.map(post => (
-          <View
-            key={post.id}
-            style={{
-              marginTop: 20,
-              marginBottom: 20,
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              backgroundColor: 'white',
-              width: '90%',
-              // alignSelf: 'flex-end',
-              alignSelf: 'center',
-              // marginRight: -20,
-              borderRadius: 10,
-              padding: 15,
-              flexDirection: 'row',
-              height: 250,
-            }}>
-            <View
-              style={{
-                height: '100%',
-                justifyContent: 'space-around',
-                width: '40%',
-              }}>
-              {post.liked ? (
-                <TouchableOpacity>
-                  <AntdIcon
-                    name="heart"
-                    size={30}
-                    color={theme.colors.primary}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity>
-                  <AntdIcon
-                    name="hearto"
-                    size={30}
-                    color={theme.colors.primary}
-                  />
-                </TouchableOpacity>
-              )}
-
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: 'bold',
-                  color: theme.colors.primary,
-                }}>
-                {post.title}
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: '#cccccc',
-                    borderRadius: 50,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  {post.userImage ? (
-                    <Image
-                      source={{ uri: post.userImage }}
-                      style={{ width: 40, height: 40, borderRadius: 50 }}
-                    />
-                  ) : (
-                    <AntdIcon name="user" size={30} color="black" />
-                  )}
-                </View>
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    color: theme.colors.primary,
-                    marginLeft: 5,
-                  }}>
-                  {post.userName}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                width: 200,
-                height: 200,
-                // backgroundColor: 'red',
-                alignItems: 'flex-end',
-                // marginRight: -20,
-              }}>
-              {post.image ? (
-                <Image
-                  source={{
-                    uri: `${post.image}`,
-                  }}
-                  containerStyle={{
-                    width: 200,
-                    height: 200,
-                  }}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}
-                  PlaceholderContent={<Text>Loading...</Text>}
-                />
-              ) : (
-                <View
-                  style={{
-                    width: 200,
-                    height: 200,
-                    backgroundColor: 'grey',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 30,
-                      fontWeight: 'bold',
-                      color: theme.colors.primary,
-                      alignSelf: 'center',
-                    }}>
-                    No IMAGE
-                  </Text>
-                </View>
-              )}
-            </View>
-          </View>
-        ))}
+        <Post />
+        <Post />
+        <Post />
       </ScrollView>
       <AuthModal showModal={showAuthModal} setShowModal={setShowAuthModal} />
 
