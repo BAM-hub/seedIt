@@ -82,85 +82,82 @@ const PlantsCatigories = ({ navigation }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <View
+              <SharedElement
                 style={{
-                  width: 250,
+                  width: Dimensions.get('screen').width - 40,
                   height: 300,
                   overflow: 'hidden',
                   alignItems: 'center',
                   borderRadius: 20,
-                }}>
+                }}
+                id={`item.${item.name}.photo`}>
                 <View
-                  style={[
-                    StyleSheet.absoluteFillObject,
-                    { backgroundColor: 'white' },
-                  ]}
-                />
-                <SharedElement
                   style={{
-                    width: 250 * 1.4,
+                    width: Dimensions.get('screen').width - 40,
                     height: 300,
-                  }}
-                  id={`item.${item.name}.photo`}>
-                  <Animated.Image
-                    source={item.image}
-                    style={{
-                      width: 250 * 1.4,
-                      height: 300,
-                      resizeMode: 'cover',
-                      transform: [{ translateX }],
-                      position: 'absolute',
-                    }}
-                  />
-                </SharedElement>
-                <LinearGradient
-                  colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.7)']}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    width: '100%',
-                    height: '100%',
+                    overflow: 'hidden',
                     alignItems: 'center',
-                    justifyContent: 'flex-end',
+                    borderRadius: 20,
+                    position: 'absolute',
                   }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('plantCategory', {
-                        category: item,
-                      });
-                    }}
-                    activeOpacity={0.8}>
-                    <SharedElement id={`item.${item.name}.text`}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 20,
-                          fontWeight: 'bold',
-                          padding: 20,
-                          position: 'absolute',
-                          bottom: 0,
-                          alignSelf: 'center',
-                        }}>
-                        {item.name}
-                      </Text>
-                    </SharedElement>
-                  </TouchableOpacity>
-                </LinearGradient>
-              </View>
+                  <View
+                    style={{
+                      width: Dimensions.get('screen').width - 40,
+                      height: 300,
+                      backgroundColor: 'white',
+                      borderRadius: 20,
+                      position: 'absolute',
+                    }}>
+                    <Animated.Image
+                      source={item.image}
+                      style={{
+                        width: Dimensions.get('screen').width - 40,
+                        height: 300,
+                        resizeMode: 'cover',
+                        transform: [{ translateX }],
+                        position: 'absolute',
+                      }}
+                    />
+                    <LinearGradient
+                      colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.7)']}
+                      style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        width: '100%',
+                        height: '100%',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                      }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          navigation.navigate('plantCategory', {
+                            category: item,
+                          });
+                        }}
+                        activeOpacity={0.8}>
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontSize: 20,
+                            fontWeight: 'bold',
+                            padding: 20,
+                            position: 'absolute',
+                            bottom: 20,
+                            alignSelf: 'center',
+                          }}>
+                          {item.name}
+                        </Text>
+                      </TouchableOpacity>
+                    </LinearGradient>
+                  </View>
+                </View>
+              </SharedElement>
             </View>
           );
         }}
       />
     </View>
   );
-};
-
-PlantsCatigories.sharedElements = (route, otherRoute, showing) => {
-  const { plantsCategories } = usePlantsStore();
-  return [
-    ...plantsCategories.map(item => `item.${item.name}.photo`),
-    ...plantsCategories.map(item => `item.${item.name}.text`),
-  ];
 };
 
 export default PlantsCatigories;

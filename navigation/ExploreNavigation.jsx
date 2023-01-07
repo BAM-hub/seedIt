@@ -9,11 +9,9 @@ const ProfileNavigation = () => {
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator
-        screenOptions={
-          {
-            // headerShown: false,
-          }
-        }
+        screenOptions={{
+          headerShown: false,
+        }}
         initialRouteName="explore">
         <Stack.Screen name="explore" component={Explore} />
         <Stack.Screen
