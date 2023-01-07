@@ -23,58 +23,6 @@ const Explore = ({ navigation }) => {
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [stories, setStories] = useState([
-    {
-      id: 1,
-      name: 'John Doe',
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-    },
-    {
-      id: 2,
-      name: 'John Doe',
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-    },
-    {
-      id: 3,
-      name: 'John Doe',
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-    },
-    {
-      id: 4,
-      name: 'John Doe',
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-    },
-    {
-      id: 5,
-      name: 'John Doe',
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-    },
-    {
-      id: 6,
-      name: 'John Doe',
-      image:
-        'https://i.pinimg.com/736x/47/8e/d1/478ed1fb9342c571505643a0e622c4ec.jpg',
-    },
-  ]);
-  const [tags, setTags] = useState([
-    {
-      id: 1,
-      name: 'Nature',
-    },
-    {
-      id: 2,
-      name: 'Learning',
-    },
-    {
-      id: 3,
-      name: 'Getting Started',
-    },
-  ]);
 
   const [posts, setPosts] = useState([
     {
@@ -112,22 +60,6 @@ const Explore = ({ navigation }) => {
       setShowAuthModal(true);
     }
   }, [data]);
-
-  const renderItem = ({ item }) => (
-    <View
-      style={{
-        width: 60,
-        height: 60,
-        backgroundColor: 'grey',
-        borderRadius: 50,
-        margin: 10,
-      }}>
-      <Image
-        source={{ uri: item.image }}
-        style={{ width: 60, height: 60, borderRadius: 50 }}
-      />
-    </View>
-  );
 
   return (
     <View
@@ -175,13 +107,6 @@ const Explore = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <ScrollView>
-        <FlatList
-          data={stories}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
         <PlantsCatigories navigation={navigation} />
         <Text
           style={{
@@ -410,66 +335,6 @@ const ProfileModal = ({ showModal, setShowModal }) => (
       </Modal>
     </Portal>
   </Provider>
-);
-
-const unused = () => (
-  <View
-    style={{
-      marginTop: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-    }}>
-    <Image
-      source={{
-        uri: 'https://i.pinimg.com/564x/6f/e0/bf/6fe0bf5a6aeaaaf27f6ea247df228dee.jpg',
-      }}
-      containerStyle={{
-        width: '90%',
-        height: 250,
-        position: 'relative',
-      }}
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
-      PlaceholderContent={<Text>Loading...</Text>}
-    />
-    <Text
-      style={{
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: 'white',
-        position: 'absolute',
-        left: 40,
-        top: 200,
-      }}>
-      TUT
-    </Text>
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      {tags.map(tag => (
-        <TouchableOpacity key={tag.id}>
-          <Chip
-            type="outline"
-            containerStyle={{
-              margin: 10,
-              borderRadius: 20,
-              borderWidth: 1,
-              borderColor: theme.colors.primary,
-            }}>
-            <Text
-              style={{
-                color: theme.colors.primary,
-                fontSize: 15,
-                fontWeight: '600',
-              }}>
-              {tag.name}
-            </Text>
-          </Chip>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
-  </View>
 );
 
 export default Explore;
