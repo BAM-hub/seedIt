@@ -12,6 +12,7 @@ import CommunityNavigation from './CommunityNavigation';
 import Explore from '../screens/Explore';
 import CameraScreen from '../screens/Camera';
 import MyGardenScreen from '../screens/MyGardenScreen';
+import ExploreNavigation from './ExploreNavigation';
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
@@ -35,7 +36,7 @@ const Navigation = () => {
           />
           <Tab.Screen
             name="explore"
-            component={Explore}
+            component={ExploreNavigation}
             options={{
               tabBarLabel: 'explore',
               tabBarIcon: () => <Icon name="home" size={25} color="white" />,
