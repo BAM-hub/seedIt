@@ -34,20 +34,21 @@ const Navigation = () => {
               tabBarIcon: () => <Icon name="camerao" size={25} color="white" />,
             }}
           />
-          <Tab.Screen
-            name="explore"
-            component={ExploreNavigation}
-            options={{
-              tabBarLabel: 'explore',
-              tabBarIcon: () => <Icon name="home" size={25} color="white" />,
-            }}
-          />
+
           <Tab.Screen
             name="Community"
             component={CommunityNavigation}
             options={{
               tabBarLabel: 'community',
               tabBarIcon: () => <MI name="explore" size={25} color="white" />,
+            }}
+          />
+          <Tab.Screen
+            name="explore"
+            component={ExploreNavigation}
+            options={{
+              tabBarLabel: 'explore',
+              tabBarIcon: () => <Icon name="home" size={25} color="white" />,
             }}
           />
           <Tab.Screen
