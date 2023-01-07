@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import ProfileImage from '../components/profile/ProfileImage';
 import { useTheme, Button } from '@rneui/themed';
 import useGetAuthToken from '../hooks/useGetAuthToken';
@@ -36,7 +36,7 @@ const Profile = ({ navigation }) => {
   return (
     <View
       style={{
-        flex: 1,
+        height: '100%',
         justifyContent: 'space-evenly',
       }}>
       <ProfileImage navigation={navigation} setShowModal={false} />
@@ -81,7 +81,7 @@ const ProfileDetails = ({ data }) => {
         alignItems: 'center',
         padding: 10,
         paddingVertical: 20,
-        flex: 0.3,
+        height: Dimensions.get('window').height / 6,
         justifyContent: 'space-evenly',
         shadowColor: theme.colors.primary,
         shadowOffset: {

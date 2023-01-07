@@ -1,13 +1,12 @@
-import { View } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { useTheme } from '@rneui/themed';
-import { Dimensions } from 'react-native';
 
 const PlantCardWrapper = ({ children }) => {
   const { theme } = useTheme();
   return (
     <View
       style={{
-        flex: 0.4,
+        height: Dimensions.get('window').height / 5,
         width: '95%',
         alignSelf: 'flex-end',
         backgroundColor: '#fff',
