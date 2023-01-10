@@ -1,140 +1,44 @@
-// import { Image } from '@rneui/themed';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Image } from '@rneui/themed';
 import {
   View,
-  Text,
   SafeAreaView,
   Dimensions,
-  StyleSheet,
-  StatusBar,
   FlatList,
-  Image,
   Animated,
-  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import {
   FlingGestureHandler,
   Directions,
   State,
-  Gesture,
-  GestureDetector,
 } from 'react-native-gesture-handler';
-import EVI from 'react-native-vector-icons/EvilIcons';
+import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
+import BottomSheet from '../components/result/BottomSheet';
+import OverflowItems from '../components/result/OverflowItems';
 
-const DATA = [
-  {
-    title: 'Afro vibes',
-    location: 'Mumbai, India',
-    date: 'Nov 17th, 2020',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2020/07/Afro-vibes-flyer-template.jpg',
-  },
-  {
-    title: 'Jungle Party',
-    location: 'Unknown',
-    date: 'Sept 3rd, 2020',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2019/11/Jungle-Party-Flyer-Template-1.jpg',
-  },
-  {
-    title: '4th Of July',
-    location: 'New York, USA',
-    date: 'Oct 11th, 2020',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2020/06/4th-Of-July-Invitation.jpg',
-  },
-  {
-    title: 'Summer festival',
-    location: 'Bucharest, Romania',
-    date: 'Aug 17th, 2020',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2020/07/Summer-Music-Festival-Poster.jpg',
-  },
-  {
-    title: 'BBQ with friends',
-    location: 'Prague, Czech Republic',
-    date: 'Sept 11th, 2020',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2020/06/BBQ-Flyer-Psd-Template.jpg',
-  },
-  {
-    title: 'Festival music',
-    location: 'Berlin, Germany',
-    date: 'Apr 21th, 2021',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2020/06/Festival-Music-PSD-Template.jpg',
-  },
-  {
-    title: 'Beach House',
-    location: 'Liboa, Portugal',
-    date: 'Aug 12th, 2020',
-    poster:
-      'https://www.creative-flyers.com/wp-content/uploads/2020/06/Summer-Beach-House-Flyer.jpg',
-  },
-];
+const { width } = Dimensions.get('screen');
 
-const { width, height } = Dimensions.get('screen');
-
-const OVERFLOW_HEIGHT = 80;
 const SPACING = 10;
 const ITEM_WIDTH = width * 0.76;
 const ITEM_HEIGHT = ITEM_WIDTH * 1.7;
 const VISIBLE_ITEMS = 3;
 
-const OverflowItems = ({ data, scrollXAnimated }) => {
-  const inputRange = [-1, 0, 1];
-  const translateY = scrollXAnimated.interpolate({
-    inputRange,
-    outputRange: [OVERFLOW_HEIGHT, 0, -OVERFLOW_HEIGHT],
-  });
+const ResultScreen = ({ route, navigation }) => {
+  const { res } = route.params;
+  console.log(res);
+  const scrollXIndex = useRef(new Animated.Value(0)).current;
+  const scrollXAnimated = useRef(new Animated.Value(0)).current;
+  const [index, setIndex] = useState(0);
 
-  return (
-    <View style={styles.overflowContainer}>
-      <Animated.View
-        style={{
-          transform: [{ translateY }],
-        }}>
-        {data.map((item, index) => {
-          return (
-            <View key={index} style={styles.itemContainer}>
-              <Text style={[styles.title]} numberOfLines={1}>
-                {item.title}
-              </Text>
-              <View style={styles.itemContainerRow}>
-                <Text style={[styles.location]}>
-                  <EVI
-                    name="location"
-                    size={16}
-                    color="black"
-                    style={{ marginRight: 5 }}
-                  />
-                  {item.location}
-                </Text>
-                <Text style={[styles.date]}>{item.date}</Text>
-              </View>
-            </View>
-          );
-        })}
-      </Animated.View>
-    </View>
-  );
-};
-
-const ResultScreen = () => {
-  const [data, setData] = useState(DATA);
-  const scrollXIndex = React.useRef(new Animated.Value(0)).current;
-  const scrollXAnimated = React.useRef(new Animated.Value(0)).current;
-  const [index, setIndex] = React.useState(0);
-
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.spring(scrollXAnimated, {
       toValue: scrollXIndex,
       useNativeDriver: true,
     }).start();
   });
 
-  const setActiveIndex = React.useCallback(activeIndex => {
+  const setActiveIndex = useCallback(activeIndex => {
     scrollXIndex.setValue(activeIndex);
     setIndex(activeIndex);
   });
@@ -146,14 +50,18 @@ const ResultScreen = () => {
         justifyContent: 'center',
         backgroundColor: '#fff',
       }}>
-      {/* <StatusBar hidden /> */}
-      <OverflowItems data={data} scrollXAnimated={scrollXAnimated} />
+      <TouchableOpacity
+        style={{ padding: 10 }}
+        onPress={() => navigation.goBack()}>
+        <MCI name="arrow-left" size={24} color="black" />
+      </TouchableOpacity>
+      <OverflowItems res={res} scrollXAnimated={scrollXAnimated} />
       <FlingGestureHandler
         key="left"
         direction={Directions.LEFT}
         onHandlerStateChange={ev => {
           if (ev.nativeEvent.state === State.END) {
-            if (index === data.length - 1) return;
+            if (index === res.length - 1) return;
 
             setActiveIndex(index + 1);
           }
@@ -169,7 +77,7 @@ const ResultScreen = () => {
             }
           }}>
           <FlatList
-            data={data}
+            data={res}
             keyExtractor={(_, index) => index.toString()}
             horizontal
             inverted
@@ -187,7 +95,7 @@ const ResultScreen = () => {
               style,
               ...props
             }) => {
-              const newStyle = [style, { zIndex: data.length - index }];
+              const newStyle = [style, { zIndex: res.length - index }];
               return (
                 <View style={newStyle} index={index} {...props}>
                   {children}
@@ -213,15 +121,15 @@ const ResultScreen = () => {
                 <Animated.View
                   style={{
                     position: 'absolute',
-                    left: -ITEM_WIDTH / 2,
+                    left: (-ITEM_WIDTH / 2) * 0.8,
                     transform: [{ translateX }, { scale }],
                     opacity,
                   }}>
                   <Image
-                    source={{ uri: item.poster }}
+                    source={{ uri: item.image }}
                     style={{
-                      width: ITEM_WIDTH,
-                      height: ITEM_HEIGHT,
+                      width: ITEM_WIDTH * 0.8,
+                      height: ITEM_HEIGHT * 0.8,
                     }}
                   />
                 </Animated.View>
@@ -230,113 +138,9 @@ const ResultScreen = () => {
           />
         </FlingGestureHandler>
       </FlingGestureHandler>
-      <BottomSheet />
+      <BottomSheet res={res} index={index} />
     </SafeAreaView>
   );
 };
-
-const BottomSheet = () => {
-  const [data, setData] = useState(DATA);
-  const yPosition = React.useRef(new Animated.Value(0)).current;
-  const [top, setTop] = React.useState(height / 1.35);
-  useEffect(() => {
-    Animated.spring(yPosition, {
-      toValue: top,
-      useNativeDriver: true,
-    }).start();
-  });
-  return (
-    <FlingGestureHandler
-      key="up"
-      direction={Directions.UP}
-      onHandlerStateChange={ev => {
-        if (ev.nativeEvent.state === State.END) {
-          setTop(height / 5);
-        }
-      }}>
-      <FlingGestureHandler
-        key="down"
-        direction={Directions.DOWN}
-        onHandlerStateChange={ev => {
-          if (ev.nativeEvent.state === State.END) {
-            setTop(height / 1.35);
-          }
-        }}>
-        <Animated.View
-          style={[
-            {
-              height: height / 1.3,
-              backgroundColor: '#ffffff',
-              position: 'absolute',
-              // top: 0,
-              left: 0,
-              right: 0,
-              borderRadius: 20,
-              borderWidth: 0.5,
-              borderColor: '#d3d3d3',
-            },
-            { transform: [{ translateY: yPosition }] },
-          ]}>
-          <View
-            style={{
-              height: 20,
-              width: '90%',
-              alignSelf: 'center',
-              justifyContent: 'center',
-              borderBottomWidth: 0.5,
-              borderBottomColor: '#d3d3d3',
-            }}>
-            <View
-              style={{
-                width: 40,
-                height: 5,
-                backgroundColor: '#d3d3d3',
-                borderRadius: 5,
-                alignSelf: 'center',
-              }}
-            />
-          </View>
-          <ScrollView></ScrollView>
-        </Animated.View>
-      </FlingGestureHandler>
-    </FlingGestureHandler>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '900',
-    textTransform: 'uppercase',
-    letterSpacing: -1,
-    color: '#000',
-  },
-  location: {
-    fontSize: 16,
-    color: '#000',
-  },
-  date: {
-    fontSize: 12,
-    color: '#000',
-  },
-  itemContainer: {
-    height: OVERFLOW_HEIGHT,
-    padding: SPACING * 2,
-  },
-  itemContainerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  overflowContainer: {
-    height: OVERFLOW_HEIGHT,
-    overflow: 'hidden',
-  },
-});
 
 export default ResultScreen;
