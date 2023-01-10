@@ -2,7 +2,8 @@ import React from 'react';
 import { SafeAreaView } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@rneui/themed';
-import Navigation from './screens/Navigation';
+import Navigation from './navigation/Navigation';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,13 +58,15 @@ const theme = createTheme({
 
 const App = () => {
   return (
-    <SafeAreaView>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
-          <Navigation />
-        </ThemeProvider>
-      </QueryClientProvider>
-    </SafeAreaView>
+    <GestureHandlerRootView>
+      <SafeAreaView>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
+            <Navigation />
+          </ThemeProvider>
+        </QueryClientProvider>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
