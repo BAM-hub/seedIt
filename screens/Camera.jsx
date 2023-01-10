@@ -13,7 +13,7 @@ import AuthModal from '../components/shared/AuthModal';
 
 // needed data location { latlong, elevation} and time {date, time} and weather {temp, humidity, cloud cover, pressure, weather condition, soil type}
 
-const CameraScreen = () => {
+const CameraScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   const devices = useCameraDevices();
   let device = devices.back;
@@ -59,8 +59,9 @@ const CameraScreen = () => {
 
   const mutation = useMutation(async photo => await uploadImage(photo), {
     onSuccess: res => {
-      console.log('data', res);
       setPredication(res.predication);
+      if (res.predication !== 'Somthing went wrong')
+        navigation.navigate('Result', { res: res });
     },
     onError: err => {
       console.log('error', err);
@@ -78,15 +79,20 @@ const CameraScreen = () => {
   const takePhoto = async () => {
     if (isCapturing) return;
     setIsCapturing(true);
-    const photo = await camera.current.takePhoto({
-      flash: flash,
-      quality: 1,
-    });
+    // console.log('camera.current', camera.current.takePhoto);
+    const photo = await camera.current
+      .takePhoto({
+        flash: flash,
+        quality: 1,
+      })
+      .then(res => {
+        console.log('res', res);
+        return res;
+      });
+
     setTempImage(`file://${photo.path}`);
     setIsCapturing(false);
-    // await uploadImage(photo);
     mutation.mutate(photo.path);
-    // await getPrediction();
   };
   const handleFocus = async e => {
     if (!device.supportsFocus) return;
