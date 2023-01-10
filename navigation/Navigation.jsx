@@ -13,6 +13,7 @@ import Explore from '../screens/Explore';
 import CameraScreen from '../screens/Camera';
 import MyGardenScreen from '../screens/MyGardenScreen';
 import ExploreNavigation from './ExploreNavigation';
+import CameraNavigation from './CameraNavigation';
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
@@ -28,7 +29,7 @@ const Navigation = () => {
           barStyle={{ backgroundColor: theme.colors.primary }}>
           <Tab.Screen
             name="camera"
-            component={CameraScreen}
+            component={CameraNavigation}
             options={{
               tabBarLabel: 'camera',
               tabBarIcon: () => <Icon name="camerao" size={25} color="white" />,
