@@ -14,7 +14,17 @@ export const uploadImage = async image => {
       type: 'image/jpg',
     });
 
-    formData.append('contetntType', 'image/jpg');
+    formData.append(
+      'date',
+      new Date()
+        .toISOString('dd-mm-yyyy')
+        .split('T')[0]
+        .split('-')
+        .reverse()
+        .join('-'),
+    );
+
+    console.log(formData);
     // console.log(formData);
     const res = await client.post('/Upload_Image', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
