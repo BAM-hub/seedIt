@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { uploadProfileImage } from '../../api/profile';
 import useProfileStore from '../../store/profileStore';
 import useUserStore from '../../store/userStore';
+import { useEffect } from 'react';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -14,9 +15,10 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
   const { theme } = useTheme();
   const {
-    profile: { profilePic: imageURI },
+    profile,
     uploadingImage: { localImageURI, localImage },
     updateProfileImage,
+    resetUploadingImage,
   } = useProfileStore();
   const {
     user: { id },
@@ -29,19 +31,21 @@ const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
         id: id,
       }),
     onSuccess: ({ data }) => {
-      console.log('success', data);
       updateProfileImage(data);
       navigation.goBack();
     },
-    onError: () => {
-      console.log('error');
-    },
+    onError: () => {},
   });
 
   const handleUploadImage = () => {
-    console.log('uploading');
     uploadImageMutation.mutate();
   };
+
+  useEffect(() => {
+    return () => {
+      resetUploadingImage();
+    };
+  }, []);
 
   return (
     <View
@@ -55,6 +59,7 @@ const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
           position: 'relative',
           borderRadius: 200,
           shadowColor: theme.colors.primary,
+
           shadowOffset: {
             width: 0,
             height: 7,
@@ -69,19 +74,19 @@ const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
             alignSelf: 'center',
             position: 'relative',
             marginHorizontal: 'auto',
-            width: SCREEN_WIDTH / 1.5,
-            height: SCREEN_WIDTH / 1.5,
+            width: SCREEN_WIDTH / 1.8,
+            height: SCREEN_WIDTH / 1.8,
           }}
           style={{
             borderRadius: 200,
-            width: SCREEN_WIDTH / 1.5,
-            height: SCREEN_WIDTH / 1.5,
+            width: SCREEN_WIDTH / 1.8,
+            height: SCREEN_WIDTH / 1.8,
           }}
           loadingIndicatorSource={LoadingAimantion}
           source={
-            imageURI
-              ? { uri: localImageURI ? localImageURI : imageURI }
-              : Avatar
+            profile?.profilePic
+              ? { uri: localImageURI ? localImageURI : profile?.profilePic }
+              : { uri: localImageURI ? localImageURI : Avatar }
           }
         />
 
@@ -155,8 +160,8 @@ const LoadingAimantion = () => (
 const AbsoluteWrapper = ({ children, backgroundColor }) => (
   <View
     style={{
-      width: SCREEN_WIDTH / 1.5,
-      height: SCREEN_WIDTH / 1.5,
+      width: SCREEN_WIDTH / 1.8,
+      height: SCREEN_WIDTH / 1.8,
       position: 'absolute',
       display: 'flex',
       justifyContent: 'center',

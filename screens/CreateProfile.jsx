@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { useTheme, Input, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import InputPlaceholder from '../components/shared/InputPlaceHolder';
@@ -20,12 +20,12 @@ const CreateProfile = ({ navigation }) => {
 
   const { mutateProfile, isLoading } = useMutateProfile(
     profile,
-    profile ? 'update' : 'create',
+    cahcedProfile?.profileUserName ? 'update' : 'create',
     () => navigation.goBack(),
   );
 
   const handleSubmit = () => {
-    if (profile.profileUserName === '')
+    if (profile?.profileUserName === '')
       return setError('Please enter your profile name');
     mutateProfile();
   };
@@ -76,6 +76,7 @@ const CreateProfile = ({ navigation }) => {
           alignSelf: 'center',
           paddingHorizontal: 15,
           borderRadius: 30,
+          marginBottom: 40,
         }}
         buttonStyle={{
           padding: 15,
@@ -97,7 +98,6 @@ const CreateProfile = ({ navigation }) => {
 };
 
 const ProfileInput = ({ profile, setProfile, error }) => {
-  console.log('profile', profile);
   const { theme } = useTheme();
   return (
     <View
@@ -110,7 +110,7 @@ const ProfileInput = ({ profile, setProfile, error }) => {
           padding: 15,
         }}
         onChangeText={text => setProfile({ ...profile, profileUserName: text })}
-        value={profile.profileUserName}
+        value={profile?.profileUserName}
         leftIcon={() => <InputPlaceholder text="Name:" />}
         inputContainerStyle={[
           theme.inputContainerStylePrimary,
@@ -128,7 +128,7 @@ const ProfileInput = ({ profile, setProfile, error }) => {
         leftIcon={() => <InputPlaceholder text="Address:" />}
         inputContainerStyle={theme.inputContainerStylePrimary}
         onChangeText={text => setProfile({ ...profile, address: text })}
-        value={profile.address}
+        value={profile?.address}
       />
       <Input
         style={{
@@ -137,7 +137,7 @@ const ProfileInput = ({ profile, setProfile, error }) => {
         leftIcon={() => <InputPlaceholder text="Bio:" />}
         inputContainerStyle={theme.inputContainerStylePrimary}
         onChangeText={text => setProfile({ ...profile, bio: text })}
-        value={profile.bio}
+        value={profile?.bio}
       />
     </View>
   );
@@ -151,6 +151,7 @@ const LoadingOverlay = () => (
       left: 0,
       right: 0,
       bottom: 0,
+      height: Dimensions.get('window').height,
       backgroundColor: '#ffffff7c',
       justifyContent: 'center',
       alignItems: 'center',

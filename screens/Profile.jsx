@@ -1,16 +1,16 @@
 import { View, Text, Dimensions } from 'react-native';
 import ProfileImage from '../components/profile/ProfileImage';
 import { useTheme, Button } from '@rneui/themed';
-import useGetAuthToken from '../hooks/useGetAuthToken';
 import useProfileStore from '../store/profileStore';
 import NoPlantsCard from '../components/profile/plants/NoPlantsCard';
 import PlantCards from '../components/profile/plants/PlantCards';
+import useUserStore from '../store/userStore';
 
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
   const profile = useProfileStore(state => state.profile);
-  console.log('profile', profile);
-  const { data: user } = useGetAuthToken();
+  const { user } = useUserStore();
+
   const plants = [
     {
       name: 'Plant 1',
@@ -60,8 +60,9 @@ const Profile = ({ navigation }) => {
             paddingHorizontal: 30,
             backgroundColor: theme.colors.primary,
             borderRadius: 30,
+            borderWidth: 1,
           }}
-          title="Edit Profile"
+          title={profile?.profileUserName ? 'Edit Profile' : 'Create Profile'}
         />
       )}
     </View>
@@ -69,7 +70,6 @@ const Profile = ({ navigation }) => {
 };
 
 const ProfileDetails = ({ data }) => {
-  console.log('this', data);
   const { theme } = useTheme();
   return (
     <View

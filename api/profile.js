@@ -2,12 +2,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import client from './client';
 
 export const createProfile = async ({ profile, token, userId }) => {
-  const res = await client.post('/profile/CreateProfile', profile, {
-    headers: {
-      'x-auth-token': token,
-      'x-auth-id': userId,
+  const res = await client.post(
+    '/profile/CreateProfile',
+    { ...profile, userId },
+    {
+      headers: {
+        'x-auth-token': token,
+        'x-auth-id': userId,
+        'content-type': 'application/json',
+      },
     },
-  });
+  );
   return res;
 };
 
@@ -51,6 +56,5 @@ export const getProfile = async id => {
       'x-auth-token': token,
     },
   });
-  console.log({ res });
   return res.data;
 };

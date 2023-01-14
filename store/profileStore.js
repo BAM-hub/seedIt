@@ -29,6 +29,14 @@ const useProfileStore = create(set => ({
       },
     });
   },
+  resetUploadingImage: () => {
+    set({
+      uploadingImage: {
+        localImageURI: null,
+        localImage: null,
+      },
+    });
+  },
   resetProfile: () => {
     set({
       profile: {
