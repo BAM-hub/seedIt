@@ -1,18 +1,21 @@
 import { View, Text, Dimensions, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useProfileStore from '../store/profileStore';
 import { Image, useTheme, ListItem } from '@rneui/themed';
 import useUserStore from '../store/userStore';
 import NoPlantsCard from '../components/profile/plants/NoPlantsCard';
 import PlantCards from '../components/profile/plants/PlantCards';
+import useCloseCamera from '../hooks/useCloseCamera';
 
 const { width, height } = Dimensions.get('window');
 const SPACE = 15;
 
-const MyGardenScreen = () => {
+const MyGardenScreen = ({ navigation }) => {
   const { profile } = useProfileStore();
   const { user } = useUserStore();
   const { theme } = useTheme();
+  useCloseCamera(navigation);
+
   const plants = [
     {
       id: 1,
@@ -52,7 +55,6 @@ const MyGardenScreen = () => {
       toxicity: 'Non-Toxic',
     },
   ];
-
   const [activePlant, setActivePlant] = useState(plants[0]);
 
   return (
