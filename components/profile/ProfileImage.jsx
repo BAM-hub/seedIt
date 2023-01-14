@@ -86,7 +86,9 @@ const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
           source={
             profile?.profilePic
               ? { uri: localImageURI ? localImageURI : profile?.profilePic }
-              : { uri: localImageURI ? localImageURI : Avatar }
+              : localImageURI
+              ? { uri: localImageURI }
+              : Avatar
           }
         />
 
