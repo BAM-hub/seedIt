@@ -7,7 +7,7 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '@rneui/themed';
 import usePlantsStore from '../../store/plantsStore';
 import { SharedElement } from 'react-navigation-shared-element';
@@ -15,25 +15,26 @@ import { SharedElement } from 'react-navigation-shared-element';
 const PlantsCatigories = ({ navigation }) => {
   const { plantsCategories } = usePlantsStore();
   const scrollX = React.useRef(new Animated.Value(0)).current;
+
   const { theme } = useTheme();
-  // const getWikiData = async () => {
-  //   const response = await fetch(
-  //     `https://en.wikipedia.org/w/api.php?action=query&titles=${plantsCategories[0].name}&prop=extracts&format=json&exintro=1`,
-  //   );
+  const getWikiData = async plantName => {
+    const response = await fetch(
+      `https://en.wikipedia.org/w/api.php?action=query&titles=${plantName}&prop=extracts&format=json&exintro=1`,
+    );
 
-  //   const data = await response.json();
-  //   const regex = /(<([^>]+)>)/gi;
-  //   console.log(data.query.pages);
-  //   const formatedData = Object.keys(data.query.pages).map(key => {
-  //     return data.query.pages[key].extract.replace(regex, '');
-  //   });
+    const data = await response.json();
+    const regex = /(<([^>]+)>)/gi;
+    console.log(data.query.pages);
+    const formatedData = Object.keys(data.query.pages).map(key => {
+      return data.query.pages[key].extract.replace(regex, '');
+    });
 
-  //   console.log({ formatedData });
-  // };
-
-  // useEffect(() => {
-  //   getWikiData();
-  // }, []);
+    navigation.navigate('plantCategory', {
+      category: plantName,
+      plantData: formatedData,
+    });
+    return formatedData;
+  };
 
   return (
     <View
@@ -129,9 +130,12 @@ const PlantsCatigories = ({ navigation }) => {
                         justifyContent: 'flex-end',
                       }}>
                       <TouchableOpacity
-                        onPress={() => {
+                        onPress={async () => {
+                          // bug here please use react query instead
+                          const formatedData = await getWikiData(item.name);
                           navigation.navigate('plantCategory', {
                             category: item,
+                            plantData: formatedData,
                           });
                         }}
                         activeOpacity={0.8}>
