@@ -26,7 +26,7 @@ export const uploadImage = async image => {
 
     console.log(formData);
     // console.log(formData);
-    const res = await client.post('/Upload_Image', formData, {
+    const res = await client.post('/recommendationResult', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return res.data;
