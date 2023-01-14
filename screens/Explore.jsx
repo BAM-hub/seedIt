@@ -26,6 +26,7 @@ const Explore = ({ navigation }) => {
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const { profile } = useProfileStore();
 
   useEffect(() => {
     if (!data) {
@@ -73,8 +74,18 @@ const Explore = ({ navigation }) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <AntdIcon name="user" size={30} color="black" />
-            {/* <Image */}
+            {profile?.profilePicThumbnail ? (
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 200,
+                }}
+                source={{ uri: profile?.profilePicThumbnail }}
+              />
+            ) : (
+              <AntdIcon name="user" size={30} color="black" />
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -105,6 +116,7 @@ const Explore = ({ navigation }) => {
         setShowAuthModal={setShowAuthModal}
         showModal={showModal}
         setShowModal={setShowModal}
+        navigation={navigation}
       />
 
       <SharedElement id="general.bg">
@@ -123,9 +135,15 @@ const Explore = ({ navigation }) => {
   );
 };
 
-const ProfileModal = ({ showModal, setShowModal, setShowAuthModal }) => {
+const ProfileModal = ({
+  showModal,
+  setShowModal,
+  setShowAuthModal,
+  navigation,
+}) => {
   const { user } = useUserStore();
   const { profile } = useProfileStore();
+  const { theme } = useTheme();
 
   return (
     <Provider>
@@ -153,8 +171,8 @@ const ProfileModal = ({ showModal, setShowModal, setShowAuthModal }) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   padding: 20,
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'grey',
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: theme.colors.accent,
                 }}>
                 <View
                   style={{
@@ -186,9 +204,9 @@ const ProfileModal = ({ showModal, setShowModal, setShowAuthModal }) => {
                       fontWeight: 'bold',
                       color: 'black',
                     }}>
-                    BAM 99
+                    {profile.profileUserName}
                   </Text>
-                  <Text style={{ color: 'grey' }}>bsharamin12@gmail.com</Text>
+                  <Text style={{ color: 'grey' }}>{user.email}</Text>
                 </View>
               </View>
               <View
@@ -198,13 +216,15 @@ const ProfileModal = ({ showModal, setShowModal, setShowAuthModal }) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   padding: 20,
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'grey',
+                  marginTop: 10,
                 }}>
                 <Text
                   style={{ fontSize: 15, fontWeight: 'bold', color: 'black' }}>
                   Manage Your Profile
                 </Text>
+                <TouchableOpacity onPress={() => navigation.push('Profile')}>
+                  <AntdIcon name="right" size={30} color="black" />
+                </TouchableOpacity>
               </View>
             </>
           ) : (

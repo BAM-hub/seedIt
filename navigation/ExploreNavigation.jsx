@@ -2,10 +2,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import Explore from '../screens/Explore';
 import PlantCategoryScreen from '../screens/PlantCategoryScreen';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
+import CreateProfile from '../screens/CreateProfile';
 
 const Stack = createSharedElementStackNavigator();
 
-const ProfileNavigation = () => {
+const ExploreNavigation = () => {
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator
@@ -32,9 +33,10 @@ const ProfileNavigation = () => {
             ];
           }}
         />
+        <Stack.Screen name="Profile" component={CreateProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
 
-export default ProfileNavigation;
+export default ExploreNavigation;
