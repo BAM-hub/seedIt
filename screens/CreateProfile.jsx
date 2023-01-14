@@ -89,6 +89,8 @@ const CreateProfile = ({ navigation }) => {
       <ImageModal
         showModal={showModal}
         setShowModal={setShowModal}
+        navigation={navigation}
+        parent="createProfile"
         callback={() => setReadyToUpload(true)}
       />
       {isLoading && <LoadingOverlay />}
