@@ -7,11 +7,19 @@ import Animated from 'react-native-reanimated';
 import { launchImageLibrary } from 'react-native-image-picker';
 import usePopUpSpring from '../../hooks/usePopupSpring';
 import useProfileStore from '../../store/profileStore';
+import useCameraStore from '../../store/useCameraStore';
 
-const ImageModal = ({ setShowModal, showModal, callback }) => {
+const ImageModal = ({
+  navigation,
+  setShowModal,
+  showModal,
+  callback,
+  parent,
+}) => {
   const animatedStyles = usePopUpSpring(showModal);
   const { setUploadingImage } = useProfileStore();
   const { theme } = useTheme();
+  const { isCameraOpen, closeCamera } = useCameraStore();
   return (
     <Provider>
       <Portal>
@@ -51,6 +59,11 @@ const ImageModal = ({ setShowModal, showModal, callback }) => {
                 }}
                 titleStyle={{
                   color: 'black',
+                }}
+                onPressIn={() => {
+                  navigation.navigate('Camera', {
+                    parent: 'createProfile',
+                  });
                 }}>
                 <Icon name="camera" size={45} color={theme.colors.black} />
               </Button>
