@@ -6,6 +6,8 @@ import TextButton from './shared/TextButton';
 import { login } from '../api/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import useUserStore from '../store/userStore';
+import useProfileStore from '../store/profileStore';
 
 const Login = ({ toggleActive, setShowModal }) => {
   const queryClient = useQueryClient();
@@ -14,6 +16,8 @@ const Login = ({ toggleActive, setShowModal }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isError, setIsError] = useState(false);
+  const { setUser } = useUserStore();
+  const { setProfile } = useProfileStore();
 
   const loginMutation = useMutation({
     mutationKey: ['user'],
@@ -22,6 +26,16 @@ const Login = ({ toggleActive, setShowModal }) => {
       await AsyncStorage.setItem('@token', data.token);
       setShowModal(false);
       queryClient.setQueryData(['user'], data.user);
+      setUser({
+        user: {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+          token: data.token,
+          createdAt: data.user.createdAt,
+        },
+      });
+      setProfile(data.user.profile);
     },
     onError: error => {
       console.log(error, 'query catch');
