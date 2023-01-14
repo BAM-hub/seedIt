@@ -11,19 +11,19 @@ const usePlantsStore = create(set => ({
       image: require('../assets/plants/Amaryllidaceae.jpg'),
     },
     { name: 'Marantaceae', image: require('../assets/plants/Marantaceae.jpg') },
-    { name: 'Cycadaceae', image: require('../assets/plants/Cycadaceae.jpg') },
+    { name: 'Cycas', image: require('../assets/plants/Cycadaceae.jpg') },
     {
       name: 'Dryopteridaceae',
       image: require('../assets/plants/Dryopteridaceae.jpg'),
     },
     {
-      name: 'Davalliaceae',
+      name: 'Davallia',
       image: require('../assets/plants/Davalliaceae.jpg'),
     },
     { name: 'Araceae', image: require('../assets/plants/Araceae.jpg') },
     { name: 'Liliaceae', image: require('../assets/plants/Liliaceae.jpg') },
     { name: 'Arecaceae', image: require('../assets/plants/Arecaceae.jpg') },
-    { name: 'Cactaceae', image: require('../assets/plants/Cactaceae.jpg') },
+    { name: 'Cactus', image: require('../assets/plants/Cactaceae.jpg') },
     {
       name: 'Euphorbiaceae',
       image: require('../assets/plants/Euphorbiaceae.jpg'),
@@ -40,7 +40,7 @@ const usePlantsStore = create(set => ({
     },
     { name: 'Malvaceae', image: require('../assets/plants/Malvaceae.jpg') },
     {
-      name: 'Asclepiadaceae',
+      name: 'Asclepiadoideae',
       image: require('../assets/plants/Asclepiadaceae.jpg'),
     },
     {
@@ -48,31 +48,31 @@ const usePlantsStore = create(set => ({
       image: require('../assets/plants/Melastomataceae.jpg'),
     },
     {
-      name: 'Nephrolepidaceae',
+      name: 'Nephrolepis',
       image: require('../assets/plants/Nephrolepidaceae.jpg'),
     },
     { name: 'Apocynaceae', image: require('../assets/plants/Apocynaceae.jpg') },
-    { name: 'Agavaceae', image: require('../assets/plants/Agavaceae.jpg') },
+    { name: 'Agavoideae', image: require('../assets/plants/Agavaceae.jpg') },
     {
       name: 'Bignoniaceae',
       image: require('../assets/plants/Bignoniaceae.jpg'),
     },
     { name: 'Piperaceae', image: require('../assets/plants/Piperaceae.jpg') },
-    { name: 'Palmae', image: require('../assets/plants/Palmae.jpg') },
+    { name: 'Arecaceae', image: require('../assets/plants/Palmae.jpg') },
     {
       name: 'Podocarpaceae',
       image: require('../assets/plants/Podocarpaceae.jpg'),
     },
     { name: 'Pteridaceae', image: require('../assets/plants/Pteridaceae.jpg') },
     {
-      name: 'Crasssulaceae',
+      name: 'Crassulaceae',
       image: require('../assets/plants/Crasssulaceae.jpg'),
     },
     {
       name: 'Strelitziaceae',
       image: require('../assets/plants/Strelitziaceae.jpg'),
     },
-    { name: 'Miliaceae', image: require('../assets/plants/Miliaceae.jpg') },
+    { name: 'Meliaceae', image: require('../assets/plants/Miliaceae.jpg') },
     {
       name: 'Gesneriaceae',
       image: require('../assets/plants/Gesneriaceae.jpg'),
