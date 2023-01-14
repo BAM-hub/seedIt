@@ -1,23 +1,22 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, TouchableOpacity, View, Text, Dimensions } from 'react-native';
-import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import FlashOf from 'react-native-vector-icons/dist/Ionicons';
+import { View, TouchableOpacity } from 'react-native';
 import { Camera, useCameraDevices } from 'react-native-vision-camera';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { useTheme, Skeleton } from '@rneui/themed';
 import { useIsFocused } from '@react-navigation/native';
 import { uploadImage } from '../api/photo';
 import { useMutation } from '@tanstack/react-query';
 import useGetAuthToken from '../hooks/useGetAuthToken';
 import AuthModal from '../components/shared/AuthModal';
-
+import ImagePreview from '../components/camera/ImagePreview';
+import CameraActions from '../components/camera/CameraActions';
+import CameraSkeleton from '../components/camera/CameraSkeleton';
+import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
+import useCameraStore from '../store/useCameraStore';
 // needed data location { latlong, elevation} and time {date, time} and weather {temp, humidity, cloud cover, pressure, weather condition, soil type}
 
-const CameraScreen = ({ navigation }) => {
+const CameraScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const devices = useCameraDevices();
   let device = devices.back;
-  const { theme } = useTheme();
   const [isActive, setIsActive] = useState(false);
   const [flash, setFlash] = useState('off');
   const [isCapturing, setIsCapturing] = useState(false);
@@ -27,8 +26,17 @@ const CameraScreen = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const camera = useRef(null);
   const { data } = useGetAuthToken();
+  const { isCloseCamera, setIsCameraOpen, closeCamera } = useCameraStore();
 
   useEffect(() => {
+    if (isCloseCamera) {
+      closeCamera(false);
+      navigation?.goBack();
+    }
+  }, [isCloseCamera]);
+
+  useEffect(() => {
+    console.log('devices', devices);
     if (data.token) {
       setShowModal(false);
     } else {
@@ -40,6 +48,7 @@ const CameraScreen = ({ navigation }) => {
     console.log('isFocused', isFocused);
     if (isFocused) {
       setIsActive(true);
+      setIsCameraOpen(true);
     } else {
       setIsActive(false);
     }
@@ -110,117 +119,34 @@ const CameraScreen = ({ navigation }) => {
     }
   };
 
-  if (device == null) {
+  if (device == null) return <CameraSkeleton />;
+  if (tempImage)
     return (
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          backgroundColor: theme.colors.white,
-        }}>
-        <View
-          style={{
-            height: '70%',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Skeleton
-            animation="wave"
-            style={{ backgroundColor: 'grey' }}
-            width={300}
-            height={300}
-            circle
-          />
-        </View>
-        <View
-          style={{
-            height: '30%',
-            width: '100%',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
-            paddingBottom: 20,
-            justifyContent: 'space-evenly',
-          }}>
-          <Skeleton
-            animation="none"
-            style={{ backgroundColor: 'grey' }}
-            width={40}
-            height={40}
-          />
-          <Skeleton
-            animation="none"
-            style={{ backgroundColor: 'grey' }}
-            width={80}
-            height={80}
-            circle
-          />
-          <Skeleton
-            animation="none"
-            style={{ backgroundColor: 'grey' }}
-            width={40}
-            height={40}
-          />
-        </View>
-      </View>
+      <ImagePreview
+        tempImage={tempImage}
+        setTempImage={setTempImage}
+        setPredication={setPredication}
+        predication={predication}
+      />
     );
-  }
-  if (tempImage) {
-    return (
-      <View
-        style={{
-          position: 'relative',
-          height: '100%',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: theme.colors.naturalComplement,
-        }}>
-        <Image
-          source={{
-            uri: tempImage,
-          }}
-          style={{ width: '90%', height: '70%' }}
-        />
-        {predication && (
-          <View
-            style={{
-              bottom: Dimensions.get('window').height * 0.04,
-              left: 0,
-              right: 0,
-              width: '100%',
-              height: 50,
-              backgroundColor: '#2020207e',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 1,
-            }}>
-            <Text style={{ color: 'white', fontWeight: '600', fontSize: 18 }}>
-              {predication}
-            </Text>
-          </View>
-        )}
-        <View
-          style={{
-            flexDirection: 'row-reverse',
-            justifyContent: 'space-evenly',
-            width: '100%',
-            padding: 10,
-          }}>
-          <TouchableOpacity>
-            <Icon name="check" size={50} color={theme.colors.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setPredication('');
-              setTempImage(null);
-            }}>
-            <Icon name="times" size={50} color={theme.colors.primary} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
+
   return (
     <View style={{ position: 'relative' }}>
+      {route.params?.parent && (
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 10,
+            left: 10,
+            zIndex: 100,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: 10,
+            borderRadius: 50,
+          }}
+          onPress={() => navigation.goBack()}>
+          <MCI name="arrow-left" size={30} color="white" />
+        </TouchableOpacity>
+      )}
       <Camera
         style={{ Dimensions: '100%', height: '100%' }}
         ref={camera}
@@ -244,66 +170,13 @@ const CameraScreen = ({ navigation }) => {
             top: isFoucusing.y - 38,
           }}></View>
       )}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 30,
-          alignItems: 'center',
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-        }}>
-        <TouchableOpacity
-          onPress={() => setFlash(flash === 'on' ? 'off' : 'on')}>
-          <View
-            style={{
-              width: 30,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            {flash === 'on' ? (
-              <Icon name="flash" size={30} color={theme.colors.white} />
-            ) : (
-              <FlashOf name="flash-off" size={30} color={theme.colors.white} />
-            )}
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={takePhoto}
-          style={{
-            width: 100,
-            height: 100,
-            right: 'auto',
-            borderColor: theme.colors.accent,
-            borderWidth: 1,
-            borderRadius: 50,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <View
-            style={{
-              backgroundColor: theme.colors.secondary,
-              width: '80%',
-              height: '80%',
-              borderRadius: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Icon name="camera" size={50} color={theme.colors.primary} />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            launchImageLibrary({}, data => {
-              if (!data.didCancel) {
-                setTempImage(data.assets[0].uri);
-                mutation.mutate(data.assets[0].uri);
-              }
-            })
-          }>
-          <Icon name="photo" size={30} color={theme.colors.white} />
-        </TouchableOpacity>
-      </View>
+      <CameraActions
+        takePhoto={takePhoto}
+        setFlash={setFlash}
+        flash={flash}
+        setTempImage={setTempImage}
+        mutation={mutation}
+      />
       <AuthModal showModal={showModal} setShowModal={setShowModal} />
     </View>
   );
