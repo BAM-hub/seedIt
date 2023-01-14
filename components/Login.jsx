@@ -27,13 +27,11 @@ const Login = ({ toggleActive, setShowModal }) => {
       setShowModal(false);
       queryClient.setQueryData(['user'], data.user);
       setUser({
-        user: {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.name,
-          token: data.token,
-          createdAt: data.user.createdAt,
-        },
+        id: data.user.id,
+        email: data.user.email,
+        name: data.user.name,
+        token: data.token,
+        createdAt: data.user.createdAt,
       });
       setProfile(data.user.profile);
     },
