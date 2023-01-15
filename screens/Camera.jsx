@@ -84,25 +84,33 @@ const CameraScreen = ({ navigation, route }) => {
       var permission = await Camera.requestCameraPermission();
     // if (permission !== 'authorized') return; //redirect here in the futuer
   };
-
+  const handleSubmmit = photo => {
+    switch (route.params.parent) {
+      case 'createProfile':
+        break;
+      case 'createPost':
+        break;
+      case 'profile':
+      case 'MyGarden':
+        mutation.mutate(photo.path);
+        break;
+    }
+  };
   const takePhoto = async () => {
     if (isCapturing) return;
     setIsCapturing(true);
     // console.log('camera.current', camera.current.takePhoto);
-    const photo = await camera.current
-      .takePhoto({
-        flash: flash,
-        quality: 1,
-      })
-      .then(res => {
-        console.log('res', res);
-        return res;
-      });
+    const photo = await camera.current.takePhoto({
+      flash: flash,
+      quality: 1,
+    });
+    setIsCapturing(false);
 
     setTempImage(`file://${photo.path}`);
-    setIsCapturing(false);
-    mutation.mutate(photo.path);
+
+    handleSubmmit(photo);
   };
+
   const handleFocus = async e => {
     if (!device.supportsFocus) return;
     setIsFoucusing({
@@ -132,21 +140,19 @@ const CameraScreen = ({ navigation, route }) => {
 
   return (
     <View style={{ position: 'relative' }}>
-      {route.params?.parent && (
-        <TouchableOpacity
-          style={{
-            position: 'absolute',
-            top: 10,
-            left: 10,
-            zIndex: 100,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            padding: 10,
-            borderRadius: 50,
-          }}
-          onPress={() => navigation.goBack()}>
-          <MCI name="arrow-left" size={30} color="white" />
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 10,
+          left: 10,
+          zIndex: 100,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          padding: 10,
+          borderRadius: 50,
+        }}
+        onPress={() => navigation.goBack()}>
+        <MCI name="arrow-left" size={30} color="white" />
+      </TouchableOpacity>
       <Camera
         style={{ Dimensions: '100%', height: '100%' }}
         ref={camera}
