@@ -3,7 +3,7 @@ import { useTheme, Button } from '@rneui/themed';
 import LottieAnimation from 'lottie-react-native';
 import PlantCardWrapper from './PlantsCardWrapper';
 
-const NoPlantsCard = () => {
+const NoPlantsCard = ({ navigation }) => {
   const { theme } = useTheme();
   return (
     <PlantCardWrapper>
@@ -64,7 +64,12 @@ const NoPlantsCard = () => {
                 paddingHorizontal: 15,
                 backgroundColor: theme.colors.primary,
                 borderRadius: 15,
-              }}>
+              }}
+              onPressIn={() =>
+                navigation.navigate('Camera', {
+                  parent: 'profile',
+                })
+              }>
               <Text
                 style={{
                   color: theme.colors.white,

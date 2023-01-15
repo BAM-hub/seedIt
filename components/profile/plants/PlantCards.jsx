@@ -9,7 +9,7 @@ import PlantCardWrapper from './PlantsCardWrapper';
 import { useTheme } from '@rneui/themed';
 import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const PlantCards = ({ plants, setActivePlant }) => {
+const PlantCards = ({ plants, setActivePlant, navigation }) => {
   const { theme } = useTheme();
 
   return (
@@ -33,6 +33,11 @@ const PlantCards = ({ plants, setActivePlant }) => {
             borderRadius: 10,
             alignItems: 'center',
             justifyContent: 'center',
+          }}
+          onPress={() => {
+            navigation.navigate('Camera', {
+              parent: 'MyGarden',
+            });
           }}>
           <MCI name="plus" size={40} color={theme.colors.white} />
           <Text style={{ color: theme.colors.white }}> Add a plant</Text>
