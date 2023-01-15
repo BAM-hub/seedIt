@@ -2,10 +2,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import CommunityScreen from '../screens/CommunityScreen';
 import CreatePostScreen from '../screens/CreatePostScreen';
+import useCloseCamera from '../hooks/useCloseCamera';
 
 const Stack = createStackNavigator();
 
-const ProfileNavigation = () => {
+const ProfileNavigation = ({ navigation }) => {
+  useCloseCamera(navigation);
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator

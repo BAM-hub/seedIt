@@ -1,14 +1,13 @@
-import CreateProfile from '../screens/CreateProfile';
 import { createStackNavigator } from '@react-navigation/stack';
-import Profile from '../screens/Profile';
 import { NavigationContainer } from '@react-navigation/native';
 import CameraScreen from '../screens/Camera';
 import ResultScreen from '../screens/ResultScreen';
+import MyGardenScreen from '../screens/MyGardenScreen';
 import useCloseCamera from '../hooks/useCloseCamera';
 
 const Stack = createStackNavigator();
 
-const ProfileNavigation = ({ navigation }) => {
+const MyGardenNavigation = ({ navigation }) => {
   useCloseCamera(navigation);
   return (
     <NavigationContainer independent={true}>
@@ -16,9 +15,8 @@ const ProfileNavigation = ({ navigation }) => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Profile">
-        <Stack.Screen name="createProfile" component={CreateProfile} />
-        <Stack.Screen name="Profile" component={Profile} />
+        initialRouteName="myGarden">
+        <Stack.Screen name="myGarden" component={MyGardenScreen} />
         <Stack.Screen name="Camera" component={CameraScreen} />
         <Stack.Screen name="Result" component={ResultScreen} />
       </Stack.Navigator>
@@ -26,4 +24,4 @@ const ProfileNavigation = ({ navigation }) => {
   );
 };
 
-export default ProfileNavigation;
+export default MyGardenNavigation;

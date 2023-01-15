@@ -3,10 +3,12 @@ import Explore from '../screens/Explore';
 import PlantCategoryScreen from '../screens/PlantCategoryScreen';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import CreateProfile from '../screens/CreateProfile';
+import useCloseCamera from '../hooks/useCloseCamera';
 
 const Stack = createSharedElementStackNavigator();
 
-const ExploreNavigation = () => {
+const ExploreNavigation = ({ navigation }) => {
+  useCloseCamera(navigation);
   return (
     <NavigationContainer independent={true}>
       <Stack.Navigator

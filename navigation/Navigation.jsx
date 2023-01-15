@@ -9,6 +9,9 @@ import { useTheme } from '@rneui/themed';
 import ProfileNavigation from './ProfileNavigation';
 import CommunityNavigation from './CommunityNavigation';
 import MyGardenScreen from '../screens/MyGardenScreen';
+import ExploreNavigation from './ExploreNavigation';
+import MyGardenNavigation from './MyGardenNavigation';
+
 const Tab = createMaterialBottomTabNavigator();
 
 const Navigation = () => {
@@ -40,7 +43,7 @@ const Navigation = () => {
           />
           <Tab.Screen
             name="myGarden"
-            component={MyGardenScreen}
+            component={MyGardenNavigation}
             options={{
               tabBarLabel: 'my garden',
               tabBarIcon: () => (
