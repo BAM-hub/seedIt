@@ -10,7 +10,6 @@ const Profile = ({ navigation }) => {
   const { theme } = useTheme();
   const profile = useProfileStore(state => state.profile);
   const { user } = useUserStore();
-
   const plants = [
     {
       name: 'Plant 1',
@@ -44,7 +43,7 @@ const Profile = ({ navigation }) => {
       {profile?.plants ? (
         <PlantCards plants={profile?.plants} />
       ) : (
-        <NoPlantsCard />
+        <NoPlantsCard navigation={navigation} />
       )}
 
       {user?.token && (
