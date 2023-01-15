@@ -10,7 +10,7 @@ const PostBody = () => {
       }}>
       <Image
         source={{
-          uri: 'https://i.pinimg.com/564x/0d/04/da/0d04da2a259734f34f359324161ab0cd.jpg',
+          uri: 'https://images-ext-1.discordapp.net/external/NDtoomhKU8DS1AJ4UHjnTB-uJC786Lt7-WlXBpxxYCA/%3Fw%3D1200/https/www.familyhandyman.com/wp-content/uploads/2020/05/Black-Spot-Diplocarpon-rosae-GettyImages-1097545284.jpg?width=606&height=606',
         }}
         style={{
           width: '90%',

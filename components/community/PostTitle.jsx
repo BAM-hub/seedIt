@@ -24,7 +24,7 @@ const PostTitle = () => {
           marginVertical: 9,
           width: '80%',
         }}>
-        first post
+        Black Spot
       </Text>
       <Text
         style={{

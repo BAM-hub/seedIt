@@ -13,10 +13,11 @@ const Post = () => (
     <PostBody />
     <RowWrapper>
       <LongText>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. In vitae
-        dolorem odio eos earum facere eum blanditiis inventore amet
-        exercitationem? Fuga sed quibusdam repellat ratione quisquam
-        consequuntur, ex dignissimos ullam.
+        Black spot is a fungal disease commonly found on roses, but also on
+        other flowers and fruits. While it doesn’t kill plants outright, it
+        weakens them and makes them susceptible to other problems. In cool,
+        moist weather, small black spots appear on foliage, which starts to turn
+        yellow and eventually drops off.
       </LongText>
     </RowWrapper>
     <PostInput />

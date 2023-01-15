@@ -332,7 +332,7 @@ const PostBody = () => {
       }}>
       <Image
         source={{
-          uri: 'https://i.pinimg.com/564x/0d/04/da/0d04da2a259734f34f359324161ab0cd.jpg',
+          uri: 'https://images-ext-2.discordapp.net/external/HCZMxTzr2qIotkBzVa_Ilz8wjqF4pRSJdKLCmv8J9X0/%3Fw%3D1200/https/www.familyhandyman.com/wp-content/uploads/2020/04/Powdery-Mildew-GettyImages-1090508010.jpg?width=606&height=606',
         }}
         style={{
           width: '90%',
