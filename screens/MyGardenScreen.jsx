@@ -22,14 +22,15 @@ const MyGardenScreen = ({ navigation }) => {
       plantType: 'Succulent',
       matureSize: 'up to 1 foot',
       commonName: 'Aloe Vera',
-      botanicalName: 'Aloe Vera',
+      botanicalName: 'Aloe barbadensis miller',
       family: 'Liliaceae',
       size: 'Small',
       soilType: 'Loamy',
       siolPH: '6.5-7.5',
       hardinessZones: '10-11',
       nativeArea: 'Africa',
-      image: 'https://picsum.photos/200',
+      image:
+        'https://images-ext-2.discordapp.net/external/86glwj8sBDrssaby1j4GQLNful4ndFyEYtjLbDo0YI4/https/www.mydomaine.com/thmb/iLuNoPehVn5sdDW3wXrQxA6JKtg%3D/1500x0/filters%3Ano_upscale%28%29%3Amax_bytes%28150000%29%3Astrip_icc%28%29/GettyImages-1198326846-91c63bc87d044b7795a585fb7355ac76.jpg?width=910&height=607',
       matureSize: 'up to 1 foot',
       matureSize: 'up to 1 foot',
       bloomTime: 'Spring',
@@ -48,7 +49,8 @@ const MyGardenScreen = ({ navigation }) => {
       siolPH: '6.5-7.5',
       hardinessZones: '10-11',
       nativeArea: 'Africa',
-      image: 'https://picsum.photos/300',
+      image:
+        'https://images-ext-1.discordapp.net/external/qUcPnuFlb0PVavIWdlLpEbytVhP4XoLyQiRP7KipLzo/https/www.tokyoweekender.com/wp-content/uploads/2022/04/shutterstock_2140413769.jpg?width=909&height=606',
       matureSize: 'up to 1 foot',
       bloomTime: 'Spring',
       flowerColor: 'Red',
@@ -65,7 +67,11 @@ const MyGardenScreen = ({ navigation }) => {
       <PlantSummary plant={activePlant} />
       <Gap />
       {plants ? (
-        <PlantCards plants={plants} setActivePlant={setActivePlant} />
+        <PlantCards
+          plants={plants}
+          setActivePlant={setActivePlant}
+          navigation={navigation}
+        />
       ) : (
         <NoPlantsCard />
       )}
