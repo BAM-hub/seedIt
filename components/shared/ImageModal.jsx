@@ -19,7 +19,7 @@ const ImageModal = ({
   const animatedStyles = usePopUpSpring(showModal);
   const { setUploadingImage } = useProfileStore();
   const { theme } = useTheme();
-  const { isCameraOpen, closeCamera } = useCameraStore();
+  // const { isCameraOpen, closeCamera } = useCameraStore();
   return (
     <Provider>
       <Portal>
@@ -62,7 +62,7 @@ const ImageModal = ({
                 }}
                 onPressIn={() => {
                   navigation.navigate('Camera', {
-                    parent: 'createProfile',
+                    parent,
                   });
                 }}>
                 <Icon name="camera" size={45} color={theme.colors.black} />
@@ -96,7 +96,6 @@ const ImageModal = ({
                     if (!data.didCancel) {
                       setShowModal(false);
                       setUploadingImage(data.assets[0]);
-                      callback();
                     }
                   })
                 }>

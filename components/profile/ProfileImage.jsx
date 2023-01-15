@@ -12,17 +12,16 @@ import { useEffect } from 'react';
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
+const ProfileImage = ({ setShowModal, parent, navigation }) => {
   const { theme } = useTheme();
-  const {
-    profile,
-    uploadingImage: { localImageURI, localImage },
-    updateProfileImage,
-    resetUploadingImage,
-  } = useProfileStore();
+  const { profile, uploadingImage, updateProfileImage, resetUploadingImage } =
+    useProfileStore();
   const {
     user: { id },
   } = useUserStore();
+
+  const { localImage, localImageURI, readyToUpload } = uploadingImage;
+
   const uploadImageMutation = useMutation({
     mutationKey: ['uploadImage'],
     mutationFn: () =>
@@ -84,10 +83,10 @@ const ProfileImage = ({ setShowModal, parent, readyToUpload, navigation }) => {
           }}
           loadingIndicatorSource={LoadingAimantion}
           source={
-            profile?.profilePic
-              ? { uri: localImageURI ? localImageURI : profile?.profilePic }
-              : localImageURI
+            localImageURI
               ? { uri: localImageURI }
+              : profile?.profilePic
+              ? { uri: profile?.profilePic }
               : Avatar
           }
         />

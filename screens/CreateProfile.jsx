@@ -4,6 +4,7 @@ import { useTheme, Input, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import InputPlaceholder from '../components/shared/InputPlaceHolder';
 import ImageModal from '../components/shared/ImageModal';
+import Profiledal from '../components/shared/ImageModal';
 import ProfileImage from '../components/profile/ProfileImage';
 import SnackBar from '../components/shared/SnackBar';
 import useMutateProfile from '../hooks/useMutateProfile';
@@ -11,9 +12,13 @@ import LottieAnimation from 'lottie-react-native';
 import useProfileStore from '../store/profileStore';
 
 const CreateProfile = ({ navigation }) => {
-  const { profile: cahcedProfile } = useProfileStore();
+  const {
+    profile: cahcedProfile,
+    uploadingImage: { readyToUpload },
+    setReadyToUpload,
+  } = useProfileStore();
   const { theme } = useTheme();
-  const [readyToUpload, setReadyToUpload] = useState(false);
+  // const [readyToUpload, setReadyToUpload] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [profile, setProfile] = useState(cahcedProfile);
   const [error, setError] = useState(null);
@@ -91,7 +96,6 @@ const CreateProfile = ({ navigation }) => {
         setShowModal={setShowModal}
         navigation={navigation}
         parent="createProfile"
-        callback={() => setReadyToUpload(true)}
       />
       {isLoading && <LoadingOverlay />}
       {/* <SnackBar /> */}
