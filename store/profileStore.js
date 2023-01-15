@@ -12,6 +12,7 @@ const useProfileStore = create(set => ({
   uploadingImage: {
     localImageURI: null,
     localImage: null,
+    readyToUpload: false,
   },
   setProfile: profile => {
     console.log('zustand profile', profile);
@@ -26,6 +27,7 @@ const useProfileStore = create(set => ({
       uploadingImage: {
         localImage: image,
         localImageURI: image.uri,
+        readyToUpload: true,
       },
     });
   },
@@ -34,6 +36,7 @@ const useProfileStore = create(set => ({
       uploadingImage: {
         localImageURI: null,
         localImage: null,
+        readyToUpload: false,
       },
     });
   },
@@ -46,6 +49,13 @@ const useProfileStore = create(set => ({
         bio: null,
         profileUserName: null,
         address: null,
+      },
+    });
+  },
+  setReadyToUpload: readyToUpload => {
+    set({
+      uploadingImage: {
+        readyToUpload: readyToUpload,
       },
     });
   },
