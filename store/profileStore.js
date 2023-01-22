@@ -8,6 +8,7 @@ const useProfileStore = create(set => ({
     bio: null,
     profileUserName: null,
     address: null,
+    plants: [],
   },
   uploadingImage: {
     localImageURI: null,
@@ -15,18 +16,21 @@ const useProfileStore = create(set => ({
     readyToUpload: false,
   },
   setProfile: profile => {
-    console.log('zustand profile', profile);
     set({ profile });
   },
-  updateProfileImage: ({ profile }) => {
+  updateProfileImage: profile => {
     set({ profile });
   },
   setUploadingImage: image => {
-    console.log('zustand image', image);
     set({
       uploadingImage: {
-        localImage: image,
-        localImageURI: image.uri,
+        localImage: image || {
+          uri: `file://${image.path}`,
+          path: image.path || image.uri,
+          type: image.path.split('.').pop() || image.uri.split('.').pop(),
+          fileName: image.path.split('/').pop() || image.uri.split('/').pop(),
+        },
+        localImageURI: image.uri || `file://${image.path}`,
         readyToUpload: true,
       },
     });
@@ -58,6 +62,15 @@ const useProfileStore = create(set => ({
         readyToUpload: readyToUpload,
       },
     });
+  },
+
+  addPlantToProfile: plant => {
+    set(state => ({
+      profile: {
+        ...state.profile,
+        plants: [...state?.profile?.plants, plant],
+      },
+    }));
   },
 }));
 
