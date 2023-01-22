@@ -5,8 +5,10 @@ import { Input, Icon, useTheme, Text, Button } from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TextButton from './shared/TextButton';
 import { register } from '../api/user';
+import useUserStore from '../store/userStore';
 
 const Register = ({ toggleActive, setShowModal }) => {
+  const { setUser: setUserInStore } = useUserStore();
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -24,6 +26,7 @@ const Register = ({ toggleActive, setShowModal }) => {
       try {
         await AsyncStorage.setItem('@token', data.token);
         setShowModal(false);
+        setUserInStore({ token: data.token, ...data.user });
       } catch (e) {
         console.log(e);
       }
