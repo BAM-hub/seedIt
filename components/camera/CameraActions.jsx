@@ -3,15 +3,17 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FlashOf from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '@rneui/themed';
+import useProfileStore from '../../store/profileStore';
 
 const CameraActions = ({
   setFlash,
   flash,
   takePhoto,
   setTempImage,
-  mutation,
+  handleSubmmit,
 }) => {
   const { theme } = useTheme();
+  const { setUploadingImage } = useProfileStore();
   return (
     <View
       style={{
@@ -67,7 +69,8 @@ const CameraActions = ({
           launchImageLibrary({}, data => {
             if (!data.didCancel) {
               setTempImage(data.assets[0].uri);
-              mutation.mutate(data.assets[0].uri);
+              setUploadingImage(data.assets[0]);
+              handleSubmmit(data.assets[0].uri);
             }
           })
         }>
