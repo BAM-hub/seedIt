@@ -3,7 +3,7 @@ import client from './client';
 
 export const createProfile = async ({ profile, token, userId }) => {
   const res = await client.post(
-    '/profile/CreateProfile',
+    'Account/createProfile',
     { ...profile, userId },
     {
       headers: {
@@ -18,35 +18,41 @@ export const createProfile = async ({ profile, token, userId }) => {
 
 export const updateProfile = async ({ profile, token, userId }) => {
   console.log({ profile, token, userId });
-  const res = await client.put(
-    `/profile/UpdateProfile/${profile.id}`,
-    profile,
-    {
-      headers: {
-        'x-auth-token': token,
-        'x-auth-id': userId,
-      },
+  const res = await client.put(`/Account/updateProfile`, profile, {
+    headers: {
+      'x-auth-token': token,
+      'x-auth-id': userId,
     },
-  );
+  });
+  console.log('res', res.data);
   return res;
 };
 
 export const uploadProfileImage = async ({ image, id }) => {
   const formData = new FormData();
   formData.append('image', {
-    uri: image.uri,
-    type: image.type,
-    name: image.fileName || image.uri.split('/').pop(),
+    uri: image?.uri || `file://${image.path}`,
+    type:
+      image.type ||
+      `image/${image.path.split('.').pop()}` ||
+      `image/${image.uri.split('.').pop()}`,
+    name:
+      image.fileName ||
+      image.uri?.split('/').pop() ||
+      image.path?.split('/').pop(),
   });
-
+  console.log('formData', formData._parts);
   const token = await AsyncStorage.getItem('@token');
-  const res = await client.post(`/profile/UploadProfileImage/${id}`, formData, {
+  // console.log('token', id);
+  const res = await client.put(`/Account/Upload/${id}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
       'x-auth-token': token,
     },
   });
-  return res;
+  // const data = await res.json();
+  // console.log('res', res.data);
+  return res.data;
 };
 
 export const getProfile = async id => {

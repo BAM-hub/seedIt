@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: 'http://10.0.2.2:8000/api',
+  // baseURL: 'http://10.0.2.2:8000/api',
+  baseURL: 'http://www.seedit.somee.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
