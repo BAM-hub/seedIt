@@ -87,6 +87,15 @@ const usePlantsStore = create(set => ({
     },
     { name: 'Vitaceae', image: require('../assets/plants/Vitaceae.jpg') },
   ],
+  userPlants: [],
+  searchResult: [],
+  setUserPlants: plants =>
+    set({
+      userPlants: plants,
+    }),
+  addPlant: plant =>
+    set(state => ({ userPlants: [...state.userPlants, plant] })),
+  setSearchResult: result => set(state => ({ searchResult: result })),
 }));
 
 export default usePlantsStore;
