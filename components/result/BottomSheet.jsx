@@ -7,18 +7,25 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import PlantData from '../plants/PlantData';
+import useAddPlant from '../../hooks/useAddPlant';
 
 const { height } = Dimensions.get('screen');
 
 const BottomSheet = ({ res, index }) => {
   const yPosition = useRef(new Animated.Value(0)).current;
   const [top, setTop] = useState(height - height / 5);
+  const { addPlantMutation } = useAddPlant();
   useEffect(() => {
     Animated.spring(yPosition, {
       toValue: top,
       useNativeDriver: true,
     }).start();
   });
+
+  const handleAddPlant = () => {
+    addPlantMutation.mutate();
+  };
+
   return (
     <FlingGestureHandler
       key="up"
@@ -80,7 +87,7 @@ const BottomSheet = ({ res, index }) => {
                 alignItems: 'center',
                 marginVertical: 20,
               }}>
-              <Button>Add to my Plants</Button>
+              <Button onPressIn={handleAddPlant}>Add to my Plants</Button>
             </View>
           </ScrollView>
         </Animated.View>
