@@ -6,7 +6,7 @@ export default useGetPosts = () => {
   const { setPosts } = usePostsStore();
   const { data, isLoading, isError } = useQuery({
     queryKey: ['posts'],
-    queryFn: () => getPosts(),
+    queryFn: getPosts,
     onSuccess: data => {
       setPosts(data);
     },
