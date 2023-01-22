@@ -122,7 +122,7 @@ const Auth = ({ setShowModal }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: '70%',
+    height: '100%',
     // marginTop: '40%',
     borderRadius: 50,
     borderBottomRightRadius: 0,

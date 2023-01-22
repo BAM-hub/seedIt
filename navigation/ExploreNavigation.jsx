@@ -4,6 +4,8 @@ import PlantCategoryScreen from '../screens/PlantCategoryScreen';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import CreateProfile from '../screens/CreateProfile';
 import useCloseCamera from '../hooks/useCloseCamera';
+import SearchScreen from '../screens/SearchScreen';
+import CameraScreen from '../screens/Camera';
 
 const Stack = createSharedElementStackNavigator();
 
@@ -36,6 +38,8 @@ const ExploreNavigation = ({ navigation }) => {
           }}
         />
         <Stack.Screen name="Profile" component={CreateProfile} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Camera" component={CameraScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

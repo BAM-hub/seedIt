@@ -5,33 +5,14 @@ import useProfileStore from '../store/profileStore';
 import NoPlantsCard from '../components/profile/plants/NoPlantsCard';
 import PlantCards from '../components/profile/plants/PlantCards';
 import useUserStore from '../store/userStore';
+import usePlantsStore from '../store/plantsStore';
 
 const Profile = ({ navigation }) => {
   const { theme } = useTheme();
   const profile = useProfileStore(state => state.profile);
   const { user } = useUserStore();
-  const plants = [
-    {
-      name: 'Plant 1',
-      image: 'https://picsum.photos/200',
-    },
-    {
-      name: 'Plant 2',
-      image: 'https://picsum.photos/200',
-    },
-    {
-      name: 'Plant 3',
-      image: 'https://picsum.photos/200',
-    },
-    {
-      name: 'Plant 4',
-      image: 'https://picsum.photos/200',
-    },
-    {
-      name: 'Plant 5',
-      image: 'https://picsum.photos/200',
-    },
-  ];
+  const { userPlants } = usePlantsStore();
+
   return (
     <View
       style={{
@@ -40,8 +21,8 @@ const Profile = ({ navigation }) => {
       }}>
       <ProfileImage navigation={navigation} setShowModal={false} />
       <ProfileDetails data={profile} />
-      {profile?.plants ? (
-        <PlantCards plants={profile?.plants} />
+      {userPlants.length ? (
+        <PlantCards plants={userPlants} />
       ) : (
         <NoPlantsCard navigation={navigation} />
       )}

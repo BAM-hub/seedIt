@@ -6,16 +6,15 @@ import useUserStore from '../store/userStore';
 import NoPlantsCard from '../components/profile/plants/NoPlantsCard';
 import PlantCards from '../components/profile/plants/PlantCards';
 import useCloseCamera from '../hooks/useCloseCamera';
+import usePlantsStore from '../store/plantsStore';
+import Avatar from '../assets/avatar.png';
 
 const { width, height } = Dimensions.get('window');
 const SPACE = 15;
 
 const MyGardenScreen = ({ navigation }) => {
-  const { profile } = useProfileStore();
-  const { user } = useUserStore();
-  const { theme } = useTheme();
+  const { userPlants } = usePlantsStore();
   useCloseCamera(navigation);
-
   const plants = [
     {
       id: 1,
@@ -66,14 +65,14 @@ const MyGardenScreen = ({ navigation }) => {
       <Gap />
       <PlantSummary plant={activePlant} />
       <Gap />
-      {plants ? (
+      {userPlants.length ? (
         <PlantCards
-          plants={plants}
+          plants={userPlants}
           setActivePlant={setActivePlant}
           navigation={navigation}
         />
       ) : (
-        <NoPlantsCard />
+        <NoPlantsCard navigation={navigation} />
       )}
       <Gap />
       <PlantData plant={activePlant} />
@@ -116,7 +115,11 @@ const ProfileBanner = () => {
         elevation: 11,
       }}>
       <Image
-        source={{ uri: profile.profilePicThumbnail }}
+        source={
+          profile.profilePicThumbnail
+            ? { uri: profile.profilePicThumbnail }
+            : Avatar
+        }
         style={{
           width: width / 8,
           height: width / 8,
@@ -134,7 +137,7 @@ const ProfileBanner = () => {
             fontSize: SPACE,
             color: theme.colors.primary,
           }}>
-          {profile.profileUserName}
+          {profile.profileUserName ?? 'user'}
         </Text>
         <Text
           style={{
@@ -237,14 +240,17 @@ const PlantData = ({ plant }) => {
         onPress={() => {
           setIsExpanded(!isExpanded);
         }}>
-        {Object.keys(plant).map((key, index) => (
-          <DataRow
-            key={`${key}_${index}`}
-            label={key}
-            value={plant[key]}
-            index={index}
-          />
-        ))}
+        {Object.keys(plant)
+          .filter(key => !['image', 'id'].includes(key))
+          .filter(key => plant[key])
+          .map((key, index) => (
+            <DataRow
+              key={`${key}_${index}`}
+              label={key}
+              value={plant[key]}
+              index={index}
+            />
+          ))}
       </ListItem.Accordion>
     </View>
   );

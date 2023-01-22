@@ -27,9 +27,9 @@ const ProfileImage = ({ setShowModal, parent, navigation }) => {
     mutationFn: () =>
       uploadProfileImage({
         image: localImage,
-        id: id,
+        id: profile?.id,
       }),
-    onSuccess: ({ data }) => {
+    onSuccess: data => {
       updateProfileImage(data);
       navigation.goBack();
     },

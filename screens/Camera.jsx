@@ -11,6 +11,7 @@ import CameraActions from '../components/camera/CameraActions';
 import CameraSkeleton from '../components/camera/CameraSkeleton';
 import MCI from 'react-native-vector-icons/MaterialCommunityIcons';
 import useCameraStore from '../store/useCameraStore';
+import useProfileStore from '../store/profileStore';
 // needed data location { latlong, elevation} and time {date, time} and weather {temp, humidity, cloud cover, pressure, weather condition, soil type}
 
 const CameraScreen = ({ navigation, route }) => {
@@ -27,6 +28,7 @@ const CameraScreen = ({ navigation, route }) => {
   const camera = useRef(null);
   const { data } = useGetAuthToken();
   const { isCloseCamera, setIsCameraOpen, closeCamera } = useCameraStore();
+  const { setUploadingImage } = useProfileStore();
 
   useEffect(() => {
     if (isCloseCamera) {
@@ -87,6 +89,8 @@ const CameraScreen = ({ navigation, route }) => {
   const handleSubmmit = photo => {
     switch (route.params.parent) {
       case 'createProfile':
+        setUploadingImage(photo);
+        navigation.goBack();
         break;
       case 'createPost':
         break;
@@ -107,7 +111,6 @@ const CameraScreen = ({ navigation, route }) => {
     setIsCapturing(false);
 
     setTempImage(`file://${photo.path}`);
-
     handleSubmmit(photo);
   };
 
@@ -182,6 +185,7 @@ const CameraScreen = ({ navigation, route }) => {
         flash={flash}
         setTempImage={setTempImage}
         mutation={mutation}
+        handleSubmmit={handleSubmmit}
       />
       <AuthModal showModal={showModal} setShowModal={setShowModal} />
     </View>

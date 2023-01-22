@@ -33,7 +33,7 @@ const Login = ({ toggleActive, setShowModal }) => {
         token: data.token,
         createdAt: data.user.createdAt,
       });
-      setProfile(data.user.profile);
+      if (data.user?.profile) setProfile(data.user.profile);
     },
     onError: error => {
       console.log(error, 'query catch');

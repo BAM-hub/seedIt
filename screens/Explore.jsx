@@ -19,6 +19,7 @@ import Post from '../components/community/Post';
 import useUserStore from '../store/userStore';
 import { Image } from '@rneui/themed';
 import useProfileStore from '../store/profileStore';
+import useSearch from '../hooks/useSearch';
 
 const Explore = ({ navigation }) => {
   useGetPosts();
@@ -26,8 +27,13 @@ const Explore = ({ navigation }) => {
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  // const [search, setSearch] = useState('');
   const { profile } = useProfileStore();
-
+  const { setSearch, searchPlants } = useSearch();
+  const handleSearch = () => {
+    searchPlants.mutate();
+    navigation.navigate('Search');
+  };
   useEffect(() => {
     if (!data) {
       setShowAuthModal(true);
@@ -61,7 +67,12 @@ const Explore = ({ navigation }) => {
             borderBottomWidth: 0,
             height: '100%',
           }}
-          leftIcon={() => <Icon name="md-search" size={30} color="black" />}
+          onChangeText={text => setSearch(text)}
+          leftIcon={() => (
+            <TouchableOpacity onPress={handleSearch}>
+              <Icon name="md-search" size={30} color="black" />
+            </TouchableOpacity>
+          )}
         />
 
         <TouchableOpacity onPress={() => setShowModal(true)}>
@@ -179,9 +190,10 @@ const ProfileModal = ({
                     width: 60,
                     height: 60,
                     // backgroundColor: 'grey',
-                    borderRadius: 50,
+
+                    borderRadius: 150,
                   }}>
-                  {profile?.profilePicThumbnail && (
+                  {profile?.profilePicThumbnail ? (
                     <Image
                       style={{
                         width: 60,
@@ -190,6 +202,18 @@ const ProfileModal = ({
                       }}
                       source={{ uri: profile.profilePicThumbnail }}
                     />
+                  ) : (
+                    <View
+                      style={{
+                        width: 60,
+                        height: 60,
+                        backgroundColor: '#d3d3d3',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 250,
+                      }}>
+                      <AntdIcon name="user" size={50} color="black" />
+                    </View>
                   )}
                 </View>
                 <View
@@ -204,7 +228,7 @@ const ProfileModal = ({
                       fontWeight: 'bold',
                       color: 'black',
                     }}>
-                    {profile.profileUserName}
+                    {profile?.profileUserName ?? user.name}
                   </Text>
                   <Text style={{ color: 'grey' }}>{user.email}</Text>
                 </View>
